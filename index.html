@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuomi · 糯米语言 — 用纯 C 从零实现的 Lisp 风格系统语言</title>
+<style>
+  :root{
+    --bg:#0b0c10; --bg2:#0f1117; --panel:#151822; --panel2:#1b1f2b;
+    --border:#262b3a; --text:#e7e9f0; --dim:#9aa3b8;
+    --purple:#7c5cff; --blue:#4c9aff; --green:#57c75e;
+    --grad:linear-gradient(135deg,#7c5cff,#4c9aff);
+    --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans); color:var(--text); background:var(--bg);
+    line-height:1.65; overflow-x:hidden;
+    background-image:
+      radial-gradient(900px 500px at 12% -8%, rgba(124,92,255,.18), transparent 60%),
+      radial-gradient(800px 500px at 100% 0%, rgba(76,154,255,.14), transparent 55%);
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  /* nav */
+  nav{
+    position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);
+    background:rgba(11,12,16,.72);border-bottom:1px solid var(--border);
+  }
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{font-weight:800;font-size:20px;letter-spacing:.5px;display:flex;align-items:center;gap:9px}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--grad);box-shadow:0 0 14px rgba(124,92,255,.7)}
+  .navlinks{display:flex;gap:26px;font-size:14.5px;color:var(--dim)}
+  .navlinks a:hover{color:var(--text)}
+  @media(max-width:720px){.navlinks{display:none}}
+  /* hero */
+  header{padding:88px 0 64px;text-align:center}
+  .badge{display:inline-block;font-size:12.5px;color:var(--purple);
+    border:1px solid rgba(124,92,255,.4);background:rgba(124,92,255,.08);
+    padding:5px 14px;border-radius:999px;margin-bottom:22px;letter-spacing:.4px}
+  h1{font-size:clamp(42px,8vw,76px);font-weight:850;line-height:1.05;letter-spacing:-1px}
+  h1 .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{font-size:clamp(16px,2.4vw,20px);color:var(--dim);max-width:680px;margin:20px auto 0}
+  .sub b{color:var(--text);font-weight:600}
+  .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+  .btn{padding:13px 26px;border-radius:12px;font-weight:650;font-size:15px;transition:.18s;border:1px solid transparent}
+  .btn.pri{background:var(--grad);color:#fff;box-shadow:0 10px 30px rgba(124,92,255,.32)}
+  .btn.pri:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(124,92,255,.45)}
+  .btn.sec{background:var(--panel);border-color:var(--border);color:var(--text)}
+  .btn.sec:hover{border-color:var(--purple);color:#fff}
+  /* sections */
+  section{padding:60px 0}
+  .sec-head{margin-bottom:34px}
+  .sec-head .kicker{color:var(--purple);font-size:13.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+  .sec-head h2{font-size:clamp(26px,4vw,36px);font-weight:800;margin-top:8px;letter-spacing:-.5px}
+  .sec-head p{color:var(--dim);margin-top:10px;max-width:720px}
+  .lead{color:var(--dim);max-width:780px;font-size:16.5px}
+  .lead b{color:var(--text)}
+  /* feature grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+  .card{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--border);
+    border-radius:16px;padding:22px;transition:.18s}
+  .card:hover{border-color:rgba(124,92,255,.55);transform:translateY(-3px)}
+  .card .ico{font-size:24px;margin-bottom:12px}
+  .card h3{font-size:17px;font-weight:700;margin-bottom:7px}
+  .card p{font-size:14px;color:var(--dim)}
+  /* code tabs */
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .tab{padding:8px 16px;border-radius:10px;background:var(--panel);border:1px solid var(--border);
+    color:var(--dim);font-size:14px;cursor:pointer;transition:.15s;font-weight:600}
+  .tab:hover{color:var(--text)}
+  .tab.active{background:var(--grad);color:#fff;border-color:transparent}
+  .codewrap{position:relative;background:#0a0b0f;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  .codewrap .bar{display:flex;justify-content:space-between;align-items:center;
+    padding:10px 16px;border-bottom:1px solid var(--border);background:var(--panel)}
+  .codewrap .bar .name{font-size:13px;color:var(--dim);font-family:var(--mono)}
+  .copy{font-size:12.5px;color:var(--dim);background:var(--panel2);border:1px solid var(--border);
+    padding:4px 12px;border-radius:8px;cursor:pointer;transition:.15s}
+  .copy:hover{color:#fff;border-color:var(--purple)}
+  pre{margin:0;padding:20px;overflow:auto;font-family:var(--mono);font-size:13.5px;line-height:1.7}
+  pre code{white-space:pre}
+  .cm{color:#5c6478;font-style:italic}
+  .st{color:#9be89b}
+  .num{color:#f0a868}
+  .kw{color:#c08bff;font-weight:600}
+  .sym{color:#7fb4ff}
+  .out{color:#57c75e}
+  /* download */
+  .dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .dl{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:24px}
+  .dl h3{font-size:18px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  .dl p{font-size:14px;color:var(--dim);margin-bottom:16px}
+  .dl .mini{display:inline-block;font-size:13px;font-weight:600;color:var(--blue);
+    border:1px solid var(--border);padding:8px 16px;border-radius:10px;transition:.15s}
+  .dl .mini:hover{border-color:var(--blue);background:rgba(76,154,255,.08)}
+  .alt{margin-top:12px;font-size:12.5px;color:var(--dim)}
+  .alt a{color:var(--blue)}
+  .alt a:hover{text-decoration:underline}
+  /* launcher callout */
+  .launch{background:linear-gradient(135deg,rgba(124,92,255,.12),rgba(76,154,255,.08));
+    border:1px solid rgba(124,92,255,.4);border-radius:18px;padding:30px;display:flex;
+    gap:24px;align-items:center;flex-wrap:wrap}
+  .launch .big{font-size:40px}
+  .launch h3{font-size:22px;font-weight:800;margin-bottom:8px}
+  .launch p{color:var(--dim);max-width:560px}
+  .soon{display:inline-block;font-size:12px;font-weight:700;color:#0b0c10;background:linear-gradient(135deg,#ffd479,#ffb14c);
+    padding:3px 10px;border-radius:999px;margin-left:10px;vertical-align:middle}
+  /* footer */
+  footer{border-top:1px solid var(--border);padding:40px 0;color:var(--dim);font-size:14px;text-align:center}
+  footer a{color:var(--blue)}
+  .note{font-size:13px;color:#6b7387;margin-top:10px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span>Nuomi</div>
+    <div class="navlinks">
+      <a href="#about">简介</a>
+      <a href="#features">特性</a>
+      <a href="#examples">示例</a>
+      <a href="#download">下载</a>
+      <a href="#launcher">启动器</a>
+      <a href="#novus">novus-os</a>
+    </div>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap">
+    <span class="badge">v0.3.0 · 解释器全功能 + NUC 工具链 + Route A 编译后端</span>
+    <h1>糯米语言 <span class="grad">Nuomi</span></h1>
+    <p class="sub">一门用 <b>纯 C 从零实现</b> 的 Lisp 风格系统语言。<br>
+      原生跑在 <b>novus-os</b>，也能在 Windows / Linux 直接双击运行。</p>
+    <div class="cta">
+      <a class="btn pri" href="https://ghfast.top/https://github.com/Ryan-cpu-lang/Nuomi/releases/latest/download/nuomi.exe">⬇ 下载 nuomi.exe</a>
+      <a class="btn sec" href="https://github.com/Ryan-cpu-lang/Nuomi">在 GitHub 查看</a>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head"><div class="kicker">About</div><h2>这是什么</h2></div>
+    <p class="lead">
+      Nuomi 是一门参考 <b>Scheme / Clojure</b> 的 Lisp 风格语言，用纯 C 实现
+      （树遍历解释器 + 引用计数 GC），<b>零外部依赖</b>。它内置窗口 / GUI、HTTP、进程、
+      JSON、文件、SHA-1 校验与解压等一整套应用层原语；配套 <b>NUC 可执行格式</b> 与编译后端，
+      能把 Nuomi 子集直编成 novus-os 的原生 x86_64 机器码。<br><br>
+      一句话：<b>写起来像 Lisp，跑起来是原生码</b>——既适合写小工具、游戏和启动器，
+      也能作为 novus-os 的用户态语言模块。
+    </p>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head"><div class="kicker">Features</div><h2>核心特性</h2>
+      <p>从语法到系统调用，一套语言覆盖应用层开发。</p></div>
+    <div class="grid">
+      <div class="card"><div class="ico">🧬</div><h3>Lisp 语法</h3><p>S 表达式、闭包、高阶函数，以及 let / let* / letrec 三套局部作用域。</p></div>
+      <div class="card"><div class="ico">⚙️</div><h3>纯 C 实现</h3><p>零依赖，单文件 nuomi.exe 自带全部功能与 NUC 工具链（用 nuomi nuc 调用）。</p></div>
+      <div class="card"><div class="ico">🪟</div><h3>窗口 / GUI</h3><p>13 个窗口原语：Windows 上是真 Win32 窗口，novus 上走 Novus-WM IPC，脚本不变。</p></div>
+      <div class="card"><div class="ico">🌐</div><h3>HTTP / 进程</h3><p>拉取版本清单、并发下载资源、spawn 子进程抓日志——启动器就靠这些。</p></div>
+      <div class="card"><div class="ico">🔐</div><h3>SHA-1 / unzip</h3><p>文件完整性校验、解压 zip·jar，自带 deflate，无需 zlib。</p></div>
+      <div class="card"><div class="ico">📦</div><h3>NUC 工具链</h3><p>novus-os 原生格式读写 / 校验 / dump / 编译，emit-demo→validate→run 全通。</p></div>
+      <div class="card"><div class="ico">🚀</div><h3>Route A 编译</h3><p>Nuomi 子集 → x86_64 → .nuc，产物与官方 DEMO.NUC 格式逐字段对齐。</p></div>
+      <div class="card"><div class="ico">💾</div><h3>JSON / 文件</h3><p>读懂版本清单、管理实例目录；软错误返回 nil/false/-1，不中止程序。</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="examples">
+  <div class="wrap">
+    <div class="sec-head"><div class="kicker">Examples</div><h2>代码示例</h2>
+      <p>下面都是真实可运行的 Nuomi 片段（注意：颜色用十进制，Nuomi 不支持 0x 字面量）。</p></div>
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-t="0">REPL</div>
+      <div class="tab" data-t="1">函数与高阶</div>
+      <div class="tab" data-t="2">窗口 GUI</div>
+      <div class="tab" data-t="3">编译到 NUC</div>
+    </div>
+    <div class="codewrap">
+      <div class="bar"><span class="name" id="codename">repl</span><button class="copy" id="copybtn">复制</button></div>
+      <pre><code class="lang-nuomi" data-name="repl">
+nuomi> (+ 1 2 3)
+=> 6
+nuomi> (define (sq x) (* x x))
+=> &lt;fn sq&gt;
+nuomi> (sq 9)
+=> 81</code></pre>
+      <pre style="display:none"><code class="lang-nuomi" data-name="higher-order">
+;; 给每个元素求平方
+(define (sq x) (* x x))
+(map sq [1 2 3 4])
+;; => [1 4 9 16]
+
+;; 过滤出偶数
+(filter (lambda (n) (= 0 (% n 2))) [1 2 3 4 5 6])
+;; => [2 4 6]
+
+;; 局部作用域：并行绑定，不污染全局
+(let ((a 1) (b 2))
+  (+ a b))</code></pre>
+      <pre style="display:none"><code class="lang-nuomi" data-name="window-gui">
+;; 颜色用十进制：rgb(r,g,b) = r*65536 + g*256 + b
+(define (rgb r g b) (+ (* r 65536) (* g 256) b))
+
+(define ui (window-create 200 150 480 440 "Nuomi 窗口"))
+(window-fill ui 0 0 480 440 (rgb 20 22 26))      ;; 背景
+(window-text ui 40 66 2 "你好，糯米!" (rgb 255 255 255))
+(window-invalidate ui)
+
+;; 主循环里非阻塞取键：'up 'down 'left 'right 'esc ...
+(window-event)</code></pre>
+      <pre style="display:none"><code class="lang-nuomi" data-name="compile-to-nuc">
+;; 宿主机：把 Nuomi 子集编译成 novus-os 原生可执行格式
+nuomi -c program.nuomi -o program.nuc
+
+;; NUC 工具链：生成 / 校验 / dump / 真机执行
+nuomi nuc emit-demo demo.nuc
+nuomi nuc validate demo.nuc
+nuomi nuc run demo.nuc        ;; entry returned: 42 (0x2A)</code></pre>
+    </div>
+  </div>
+</section>
+
+<section id="download">
+  <div class="wrap">
+    <div class="sec-head"><div class="kicker">Download</div><h2>安装与下载</h2>
+      <p>三个平台都能跑；下载链接走国内加速镜像（ghproxy 系），直连可用、无需访问 GitHub。</p></div>
+    <div class="dl-grid">
+      <div class="dl">
+        <h3>🪟 Windows</h3>
+        <p>nuomi.exe 单一文件，已含全部功能与 NUC 工具链。装完 cmd 直接敲 <code style="font-family:var(--mono);color:var(--blue)">nuomi</code>；以后 <code style="font-family:var(--mono);color:var(--blue)">nuomi update</code> 一条命令自升级（同样自带镜像回退）。</p>
+        <a class="mini" href="https://ghfast.top/https://github.com/Ryan-cpu-lang/Nuomi/releases/latest/download/nuomi.exe">⬇ 下载 nuomi.exe（镜像加速）</a>
+        <div class="alt">镜像备用：<a href="https://gh-proxy.com/https://github.com/Ryan-cpu-lang/Nuomi/releases/latest/download/nuomi.exe">gh-proxy.com</a> · <a href="https://ghproxy.net/https://github.com/Ryan-cpu-lang/Nuomi/releases/latest/download/nuomi.exe">ghproxy.net</a></div>
+      </div>
+      <div class="dl">
+        <h3>🐧 Linux</h3>
+        <p>需要 gcc + make。克隆仓库后 make 产出单一 nuomi，make test 跑全套样例与 NUC 流水线。国内克隆可加镜像前缀：<code style="font-family:var(--mono);color:var(--blue)">git clone https://ghfast.top/https://github.com/Ryan-cpu-lang/Nuomi.git</code></p>
+        <a class="mini" href="https://github.com/Ryan-cpu-lang/Nuomi">查看仓库 →</a>
+      </div>
+      <div class="dl">
+        <h3>🖥️ novus-os</h3>
+        <p>直接拷 dist/novus/ 下已编译好的 .nuc 进 novus-os，用 shell exec 执行；自编程序用 nuomi -c 编译。</p>
+        <a class="mini" href="https://ghfast.top/https://github.com/Ryan-cpu-lang/Nuomi/archive/refs/heads/main.zip">⬇ 下载源码包（镜像加速）</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="launcher">
+  <div class="wrap">
+    <div class="launch">
+      <div class="big">🎮</div>
+      <div>
+        <h3>NuomiLauncher<span class="soon">即将上线</span></h3>
+        <p>用糯米语言写的 Minecraft 启动器（GUI + CLI，离线 Piston API），靠窗口 / SHA-1 / unzip / 进程这批原语搭出来。
+          启动器成熟后将作为<b>本官网的子页面</b>直接挂出，做好后会在这里补上入口。</p>
+        <p style="margin-top:10px"><a class="mini" style="display:inline-block;font-size:13px;font-weight:600;color:var(--blue);border:1px solid var(--border);padding:7px 15px;border-radius:10px" href="https://github.com/Ryan-cpu-lang/NuomiLauncher">查看源码（开发中）→</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="novus">
+  <div class="wrap">
+    <div class="sec-head"><div class="kicker">novus-os</div><h2>作为 novus-os 模块</h2></div>
+    <p class="lead">
+      Nuomi 是 <b>novus-os</b> 的用户态语言模块（作者也是 novus-os 的作者之一）。
+      <b>Route A 后端</b>把 Nuomi 编译成 x86_64 原生码塞进 .nuc，直接跑在 novus 内核上；
+      文件操作走 syscall、窗口走 Novus-WM IPC，<b>脚本接口不变</b>。
+      目标作为官方仓库的 <code style="font-family:var(--mono);color:var(--blue)">user/nuomi/</code> + <code style="font-family:var(--mono);color:var(--blue)">tools/nucutil/</code> 模块合入。
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>🍡 <a href="https://github.com/Ryan-cpu-lang/Nuomi">github.com/Ryan-cpu-lang/Nuomi</a></p>
+    <p class="note">Nuomi · 糯米语言 — 用纯 C 从零实现 · © 2026 · 本页为项目官网（GitHub Pages 托管）</p>
+  </div>
+</footer>
+
+<script>
+  const KEYWORDS = new Set(['define','if','while','let','let*','letrec','lambda','begin','set!','quote','and','or','not','cond','else','map','filter','reduce','range','list','car','cdr','cons']);
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function hlLine(line){
+    if(/^\s*(nuomi>|=>&gt;|=>)/.test(line)) return '<span class="out">'+esc(line)+'</span>';
+    let out='',i=0; const n=line.length;
+    while(i<n){
+      const c=line[i];
+      if(c===';'&&line[i+1]===';'){let e=line.indexOf('\n',i);e=e<0?n:e;out+='<span class="cm">'+esc(line.slice(i,e))+'</span>';i=e;continue;}
+      if(c==='"'){let e=i+1;while(e<n&&line[e]!=='"')e++;e=Math.min(e+1,n);out+='<span class="st">'+esc(line.slice(i,e))+'</span>';i=e;continue;}
+      if(c==='❝'){let e=line.indexOf('❞',i);e=e<0?n:e+1;out+='<span class="st">'+esc(line.slice(i,e))+'</span>';i=e;continue;}
+      if(/[0-9]/.test(c)||(c==='.'&&/[0-9]/.test(line[i+1]||''))){let e=i+1;while(e<n&&/[0-9.]/.test(line[e]))e++;out+='<span class="num">'+esc(line.slice(i,e))+'</span>';i=e;continue;}
+      if(/[A-Za-z_!*+\-/<>=?]/.test(c)){let e=i+1;while(e<n&&/[A-Za-z0-9_!*+\-/<>=?.]/.test(line[e]))e++;const w=line.slice(i,e);out+=(KEYWORDS.has(w)?'<span class="kw">'+esc(w)+'</span>':'<span class="sym">'+esc(w)+'</span>');i=e;continue;}
+      out+=esc(c);i++;
+    }
+    return out;
+  }
+  document.querySelectorAll('code.lang-nuomi').forEach(el=>{
+    const raw=el.textContent.replace(/^\n/,'').replace(/\n$/,'');
+    el.dataset.raw=raw;
+    el.innerHTML=raw.split('\n').map(hlLine).join('\n');
+  });
+  // tabs
+  const tabs=document.getElementById('tabs').querySelectorAll('.tab');
+  const pres=document.querySelectorAll('.codewrap pre');
+  const codename=document.getElementById('codename');
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    const idx=+t.dataset.t;
+    tabs.forEach(x=>x.classList.remove('active'));t.classList.add('active');
+    pres.forEach((p,i)=>p.style.display=i===idx?'block':'none');
+    codename.textContent=pres[idx].querySelector('code').dataset.name;
+  }));
+  // copy
+  document.getElementById('copybtn').addEventListener('click',()=>{
+    const active=document.querySelector('.codewrap pre[style*="block"] code')||document.querySelector('.codewrap pre code');
+    navigator.clipboard.writeText(active.dataset.raw).then(()=>{
+      const b=document.getElementById('copybtn');b.textContent='已复制 ✓';setTimeout(()=>b.textContent='复制',1400);
+    });
+  });
+</script>
+</body>
+</html>
