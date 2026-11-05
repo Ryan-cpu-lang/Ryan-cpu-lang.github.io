@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NuomiLauncher · 微软正版账号登录教程</title>
+<style>
+  :root{
+    --bg:#faf7f8; --card:#ffffff; --ink:#2f2a30; --sub:#6f6670;
+    --pink:#d9647f; --pink-soft:#fdeef2; --line:#efe6e9;
+    --ok:#2e8b6b; --warn:#b5691a; --code:#f6f2f4; --blue:#3a6ea5;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:32px 18px 80px;background:var(--bg);color:var(--ink);
+       font-family:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;
+       line-height:1.75;font-size:15px}
+  .wrap{max-width:880px;margin:0 auto}
+  header{background:linear-gradient(135deg,#fff 0%,var(--pink-soft) 100%);
+         border:1px solid var(--line);border-radius:18px;padding:26px 30px;margin-bottom:22px}
+  h1{margin:0 0 6px;font-size:25px;letter-spacing:.3px}
+  header p{margin:4px 0;color:var(--sub)}
+  .badge{display:inline-block;background:var(--pink);color:#fff;border-radius:20px;
+         padding:2px 12px;font-size:12px;margin-right:8px;vertical-align:2px}
+  .badge.b{background:var(--blue)}
+  .notice{background:#fff8e9;border-left:4px solid #e2a13a;border-radius:8px;
+          padding:14px 18px;margin:18px 0;font-size:14px}
+  .notice b{color:var(--warn)}
+  .okbox{background:#eafaf3;border-left:4px solid var(--ok);border-radius:8px;
+          padding:14px 18px;margin:18px 0;font-size:14px}
+  .okbox b{color:var(--ok)}
+  h2{font-size:19px;margin:34px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+  h2 span{color:var(--pink);margin-right:8px}
+  h3{font-size:15.5px;margin:18px 0 8px}
+  .step{display:flex;gap:16px;background:var(--card);border:1px solid var(--line);
+        border-radius:14px;padding:16px 20px;margin-bottom:12px}
+  .num{flex:0 0 30px;height:30px;border-radius:50%;background:var(--pink-soft);
+       color:var(--pink);font-weight:700;text-align:center;line-height:30px;font-size:14px}
+  .step .body{flex:1;min-width:0}
+  .step h3{margin:2px 0 6px}
+  .step p{margin:4px 0;color:var(--sub);font-size:14px}
+  .fill{background:var(--pink-soft);border-radius:7px;padding:7px 11px;margin:8px 0 2px;
+        font-size:13.5px;display:inline-block}
+  code,.mono{font-family:Consolas,"Cascadia Code",monospace;background:var(--code);
+       padding:1px 6px;border-radius:5px;font-size:13px;word-break:break-all}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:10px;
+      padding:14px 16px;white-space:pre-wrap;word-wrap:break-word;font-size:13px;
+      font-family:Consolas,"Cascadia Code",monospace;line-height:1.65;margin:10px 0}
+  table{width:100%;border-collapse:collapse;background:var(--card);
+        border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14px}
+  th,td{padding:10px 13px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--pink-soft);font-weight:600;white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  td:first-child{white-space:nowrap;font-weight:600}
+  ul{margin:8px 0;padding-left:22px;color:var(--sub);font-size:14px}
+  li{margin:5px 0}
+  .ok{color:var(--ok);font-weight:600}
+  .warn{color:var(--warn);font-weight:600}
+  .link{background:var(--pink-soft);border:1px solid var(--line);border-radius:10px;
+        padding:12px 16px;margin:14px 0;font-size:14px}
+  .link a{color:var(--pink);font-weight:600}
+  /* 模拟启动器界面 */
+  .mock{background:#2b2b33;color:#eee;border-radius:14px;padding:20px;margin:14px 0;
+        font-family:"Microsoft YaHei",sans-serif;font-size:13.5px}
+  .mock .tt{color:#f6c;font-size:15px;font-weight:700;margin-bottom:12px}
+  .mock .row{display:flex;align-items:center;gap:10px;margin:10px 0}
+  .mock label{width:130px;color:#bbb}
+  .mock .inp{flex:1;background:#1f1f26;border:1px solid #444;border-radius:7px;
+             padding:7px 10px;color:#9fe;font-family:Consolas,monospace;font-size:12.5px}
+  .mock .btn{background:linear-gradient(135deg,#d9647f,#e8789a);color:#fff;border:0;
+             border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600}
+  .mock .btn.s{background:#3a6ea5}
+  .mock .hint{color:#9a9;font-size:12px;margin-top:8px}
+  a{color:var(--pink)}
+  footer{margin-top:40px;color:var(--sub);font-size:13px;text-align:center;line-height:1.9}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:14px;
+       padding:16px 22px;margin:18px 0;font-size:14px}
+  .toc b{color:var(--pink)}
+  .toc ol{margin:8px 0 0;padding-left:22px}
+  .toc li{margin:4px 0}
+  @media(max-width:600px){.step{padding:13px 14px}header{padding:20px}th,td{padding:8px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>微软正版账号登录教程</h1>
+  <p><span class="badge">NuomiLauncher</span><span class="badge b">端到端 · 照着点就能登</span></p>
+  <p>本教程把「为什么不能直接登录 → 准备材料 → 在启动器里登录」一次性串清楚。最后更新 2026-11-05。</p>
+</header>
+
+<div class="okbox">
+  ✅ <b>先说个好消息：LittleSkin 外置登录已经实测可用。</b><br>
+  如果你只在自己的 LittleSkin 角色 / 离线单机之间玩，<b>根本不用看下面这套微软流程</b>。微软正版登录是给「要用微软账号进正版服务器」的人准备的，而且因为微软的政策，得自己动手注册一个应用（见下方「为什么」）。
+</div>
+
+<div class="notice">
+  <b>为什么不能直接登录？</b> 早期各开源启动器共用的「公共 client_id」<code>00000000402b5328</code>
+  已被微软从目录里移除（2026-11-05 实测返回 <code>AADSTS700016</code>）。微软现在要求：
+  <b>① 你自己的 Azure 应用（client_id）</b> + <b>② 该应用通过 Mojang 的 AppID 审核</b> +
+  <b>③（2024-06 起）个人账号要先有一个 Entra 目录（租户）</b>。
+  这三步都是<b>一次性配置</b>，配好之后永久免维护。它们不是启动器的 bug，换任何启动器都一样。
+</div>
+
+<div class="toc">
+  <b>📑 目录</b>
+  <ol>
+    <li><a href="#s0">开始前：为什么必须自己弄（上面已讲）</a></li>
+    <li><a href="#s1">门槛零 — 拿到一个 Entra 目录（租户）</a></li>
+    <li><a href="#s2">门槛一 — 注册 Azure 应用，拿到 client_id</a></li>
+    <li><a href="#s3">门槛二 — 提交 Mojang AppID 审核</a></li>
+    <li><a href="#s4">在启动器里登录（核心 · 逐步截图式说明）</a></li>
+    <li><a href="#s5">常见问题 / 排错</a></li>
+  </ol>
+</div>
+
+<!-- ============ 门槛零 ============ -->
+<h2 id="s1"><span>⓪</span>门槛零：拿到一个 Entra 目录（租户）</h2>
+<p>微软自 2024-06 起取消了「应用只关联个人账号、不属于任何目录」的注册方式。只用买 MC 的那个个人账号登录 Azure，点「新注册」会被直接拦下（<code>在目录外部创建应用程序的功能已被弃用</code>）。所以第一步是搞到一个真实租户。</p>
+
+<div class="step"><div class="num">A</div><div class="body">
+  <h3>最省事：你已经有工作 / 学校账号，或能被加进某个租户</h3>
+  <p>让某个租户的管理员把你加为成员即可。<b>免费、不用绑卡</b>，最适合普通人。</p>
+</div></div>
+
+<div class="step"><div class="num">B</div><div class="body">
+  <h3>通用解：注册 Azure 免费账号</h3>
+  <p>打开 <a href="https://azure.microsoft.com/free" target="_blank">azure.microsoft.com/free</a> 注册，会<b>自动生成一个 Entra ID Free 租户</b>并让你当全局管理员，应用注册永久免费。<br>
+  <span class="warn">⚠️ 微软会要「手机号 + 实体信用卡」做身份验证</span>（临时预授权、不扣费，虚拟卡不行）。M365 开发人员计划 2026 年资格已收紧，纯个人通常显示「不符合资格」。</p>
+</div></div>
+
+<div class="step"><div class="num">C</div><div class="body">
+  <h3>不推荐：External ID 30 天试用租户</h3>
+  <p>不用绑卡，但只有 30 天、到期租户被删。而 Mojang 审核按周排队，client_id 会跟着失效，只适合临时验证。</p>
+</div></div>
+
+<div class="link">📖 每一步的按钮位置与表单填写模板，看详细图文卡 <a href="./azure-appid-guide.html#s0">azure-appid-guide.html 的 ⓪ 节</a>。</div>
+
+<!-- ============ 门槛一 ============ -->
+<h2 id="s2"><span>①</span>门槛一：注册 Azure 应用，拿到 client_id</h2>
+<p>前置：确认「当前目录」是 <code>xxx.onmicrosoft.com</code> 这种真实租户（不是纯 GUID 的隐式目录）。进入 <strong>Microsoft Entra ID → App registrations → New registration</strong>。</p>
+
+<table>
+  <tr><th>步</th><th>操作</th><th>注意</th></tr>
+  <tr><td>1</td><td>Name 填 <code>NuomiLauncher</code> 之类</td><td>不能含 Mojang / Minecraft / Microsoft / Live / Xbox / Discord / Hypixel，否则 Mojang 审核会打回</td></tr>
+  <tr><td>2</td><td>Supported account types</td><td>选 <b>Accounts in any org directory + personal Microsoft accounts</b>（含「个人 Microsoft 账户」那项）；选「Personal Microsoft accounts only」也行；<b>不能</b>选「仅此组织目录」</td></tr>
+  <tr><td>3</td><td>Redirect URI 留空</td><td>设备码流不需要回调，直接 Register</td></tr>
+  <tr><td>4</td><td>进 Authentication 页 → <b>Allow public client flows = Yes</b></td><td><span class="warn">不做这步等于白注册</span>，仍会报 unauthorized_client</td></tr>
+  <tr><td>5</td><td>回 Overview 抄两个 UUID</td><td><b>Application (client) ID</b>（启动器要填的）和 <b>Directory (tenant) ID</b>（Mojang 审核必填）；别拿成 Object ID</td></tr>
+</table>
+
+<div class="link">📖 带每一步截图的图文：<a href="./azure-appid-guide.html#s1">azure-appid-guide.html 的 ① 节</a>。</div>
+
+<!-- ============ 门槛二 ============ -->
+<h2 id="s3"><span>②</span>门槛二：提交 Mojang AppID 审核</h2>
+<p>新应用默认无权调 Minecraft Java API，<code>login_with_xbox</code> 会返回 <code>403 Invalid app registration</code>。去
+  <a href="https://aka.ms/mce-reviewappid" target="_blank">aka.ms/mce-reviewappid</a> 提交「AppID Review」表单，<b>每周审一批</b>，重复提交不会更快。</p>
+
+<table>
+  <tr><th>#</th><th>字段</th><th>填什么</th></tr>
+  <tr><td>1</td><td>已阅读 EULA</td><td>Yes（<a href="http://aka.ms/mcusageguidelines" target="_blank">指南</a>）</td></tr>
+  <tr><td>2</td><td>Contact Information</td><td>注册 Azure 用的微软账号邮箱（官方会交叉核对）</td></tr>
+  <tr><td>3</td><td>What type of request</td><td>New AppID for Approval</td></tr>
+  <tr><td>4</td><td>Application Name</td><td>与 Azure 里一致，且不含禁用词</td></tr>
+  <tr><td>5</td><td>Application ID</td><td>Overview 里的 Application (client) ID，一次一个</td></tr>
+  <tr><td>6</td><td>Tenant ID</td><td>Overview 里的 <b>Directory (tenant) ID</b>，新应用必填</td></tr>
+  <tr><td>7</td><td>Associated website</td><td><code>https://github.com/Ryan-cpu-lang/NuomiLauncher</code></td></tr>
+  <tr><td>8</td><td>Justification</td><td>说明开源非商业、完整走正版认证并验证游戏所有权（英文模板见下）</td></tr>
+  <tr><td>9</td><td>Any other info</td><td>留空 / N/A</td></tr>
+</table>
+
+<pre>Justification 英文模板（直接复制改名字）：
+"Our open-source, non-commercial Minecraft launcher (NuomiLauncher) performs the
+full Microsoft -> Xbox Live -> XSTS -> Minecraft Services authentication chain and
+verifies game ownership before launching. It does not bypass, disable, or weaken
+any authentication, ownership, or license check, and works normally with
+online-mode servers. No game assets are redistributed; all downloads come from
+Mojang's official endpoints or public mirrors."</pre>
+
+<div class="notice"><b>合规底线：</b>官方要求「应用必须验证用户拥有游戏、并在进入游戏前要求认证」，绕过正版验证的启动器一律不批。本启动器走的就是完整正版链路，这点没问题 👌</div>
+
+<div class="link">📖 审核表逐项说明 + 模板原文：<a href="./azure-appid-guide.html#s2">azure-appid-guide.html 的 ② 节</a>。</div>
+
+<!-- ============ 核心：启动器里登录 ============ -->
+<h2 id="s4"><span>③</span>在启动器里登录（核心）</h2>
+<p>材料齐了：你有 <b>client_id</b>，且 Mojang 审核已通过（没通过也能先登录，只是进正版服会卡 403，等批下来自动好）。下面是在 GUI 里实际操作。</p>
+
+<h3>第 1 步：打开启动器，进入账户页</h3>
+<p>双击 <code>start.bat</code> 启动 GUI → 侧栏点「<b>账户登录</b>」。账户页大概长这样：</p>
+
+<div class="mock">
+  <div class="tt">NuomiLauncher · 账户登录</div>
+  <div class="row"><label>微软 client_id</label><div class="inp">在这里粘贴 Application (client) ID</div></div>
+  <div class="row"><label>LittleSkin 角色名</label><div class="inp">（用 LittleSkin 才填）</div></div>
+  <div class="row"><label>LittleSkin 密码</label><div class="inp">••••••••</div></div>
+  <div class="row">
+    <button class="btn">使用微软账号登录</button>
+    <button class="btn s">登录 LittleSkin</button>
+    <button class="btn s">刷新</button>
+  </div>
+  <div class="hint">已登录账户列表（点一下切换）：— 暂无 —</div>
+</div>
+
+<h3>第 2 步：填 client_id 并保存</h3>
+<p>把 Overview 里抄的 <b>Application (client) ID</b> 粘进「微软 client_id」输入框，点「保存」。<br>
+  也可以直接写文件 <code>%USERPROFILE%\.nuomi-mc\ms_client_id.txt</code>（纯一行 UUID，不要引号、不要空格）。<b>只需填一次</b>，之后不用再管。</p>
+<div class="fill">💡 把 ID 发给助手（Pudding）也可以，助手会直接帮你写好并验证。</div>
+
+<h3>第 3 步：点「使用微软账号登录」</h3>
+<p>点主按钮「<b>使用微软账号登录</b>」后：</p>
+<ul>
+  <li>启动器会<b>自动打开你的默认浏览器</b>，跳到微软登录页；</li>
+  <li>同时把<b>设备码自动复制到剪贴板</b>（无需手动记）；</li>
+  <li>启动器在后台按服务端节奏<b>自动轮询</b>，你不用盯着。</li>
+</ul>
+
+<h3>第 4 步：在浏览器里完成授权</h3>
+<p>在打开的微软登录页：用你的微软账号登录 → 到「输入设备码」那一步，<b>Ctrl+V 粘贴</b>启动器复制好的设备码 → 点「下一步 / 允许」。<br>
+  （如果剪贴板没自动粘上，启动器的提示里也会显示设备码文本，手动抄也行。）</p>
+
+<h3>第 5 步：回到启动器，登录成功</h3>
+<p>授权完成后切回启动器，它会自动检测到并弹出「登录成功」。<b>已登录账户列表</b>里会出现你的微软账号，点一下即可选中。</p>
+
+<h3>第 6 步：启动游戏</h3>
+<p>回到主界面点「启动」，启动参数会自动带上 <code>--clientId / --xuid / --userType msa / --accessToken</code>，以你的正版账号进游戏。</p>
+
+<h3>第 7 步（以后）：续期不用重登</h3>
+<p>令牌会过期（改密码、异地登录等）。过期时点主按钮右边的「<b>刷新</b」，启动器用存好的 refresh token <b>静默换新令牌，不开浏览器、不用重输密码</b>。失败就重新点「使用微软账号登录」走一遍。</p>
+
+<!-- ============ 排错 ============ -->
+<h2 id="s5"><span>⚠️</span>常见问题 / 排错</h2>
+<table>
+  <tr><th>现象</th><th>原因 / 处理</th></tr>
+  <tr><td><code>Invalid app registration / 403</code></td><td>Mojang 审核还没通过，只能等（这段时间 LittleSkin / 离线照常玩）</td></tr>
+  <tr><td><code>unauthorized_client / AADSTS700016</code></td><td>公共客户端流没开 Yes（回 ① 第 4 步），或还在用已被下架的公共 ID</td></tr>
+  <tr><td>账号类型不支持</td><td>「支持的账户类型」选成了仅组织目录，回去改成含「个人 Microsoft 账户」</td></tr>
+  <tr><td>点「新注册」弹「在目录外部创建应用程序的功能已被弃用」</td><td>2024-06 起个人账号无 Entra 租户，回 ⓪ 先建目录（换浏览器 / 重登无效）</td></tr>
+  <tr><td><code>AADSTS16000 ... not exist in tenant 'Microsoft Services'</code></td><td>同上，Entra 管理中心对个人 MSA 拿不到目录令牌</td></tr>
+  <tr><td>设备码粘贴没反应</td><td>剪贴板没复制成功，看启动器提示里的设备码文本手动抄</td></tr>
+  <tr><td>登录过期 / 会话无效</td><td>点「刷新」；仍失败就重新点「使用微软账号登录」</td></tr>
+  <tr><td>审核被打回</td><td>多半应用名含禁用词，或 Justification 没写清「验证游戏所有权」</td></tr>
+</table>
+
+<div class="notice">
+  🔑 <b>一个易混点：</b>你自己的 <b>Directory (tenant) ID 只给 Mojang 审核表单用</b>，<b>不要</b>填进启动器。启动器代码用的是固定的 <code>consumers</code> 端点，把 tenant ID 填进去反而会错。
+</div>
+
+<footer>
+  NuomiLauncher · Ryan-cpu-lang · 最后更新 2026-11-05<br>
+  本页可离线双击打开，不加载任何外部资源。<br>
+  应用注册每一步图文详解请看 <a href="./azure-appid-guide.html">azure-appid-guide.html</a> ·
+  完整文档见仓库 <a href="https://github.com/Ryan-cpu-lang/NuomiLauncher/blob/main/README.md">README.md</a>
+</footer>
+
+</div>
+</body>
+</html>

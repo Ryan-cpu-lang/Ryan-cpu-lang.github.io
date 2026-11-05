@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NuomiLauncher · 微软正版登录配置指南</title>
+<style>
+  :root{
+    --bg:#faf7f8; --card:#ffffff; --ink:#2f2a30; --sub:#6f6670;
+    --pink:#d9647f; --pink-soft:#fdeef2; --line:#efe6e9;
+    --ok:#2e8b6b; --warn:#b5691a; --code:#f6f2f4;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:32px 18px 80px;background:var(--bg);color:var(--ink);
+       font-family:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;
+       line-height:1.75;font-size:15px}
+  .wrap{max-width:860px;margin:0 auto}
+  header{background:linear-gradient(135deg,#fff 0%,var(--pink-soft) 100%);
+         border:1px solid var(--line);border-radius:18px;padding:26px 30px;margin-bottom:22px}
+  h1{margin:0 0 6px;font-size:25px;letter-spacing:.3px}
+  header p{margin:4px 0;color:var(--sub)}
+  .badge{display:inline-block;background:var(--pink);color:#fff;border-radius:20px;
+         padding:2px 12px;font-size:12px;margin-right:8px;vertical-align:2px}
+  .notice{background:#fff8e9;border-left:4px solid #e2a13a;border-radius:8px;
+          padding:14px 18px;margin:18px 0;font-size:14px}
+  .notice b{color:var(--warn)}
+  h2{font-size:19px;margin:34px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+  h2 span{color:var(--pink);margin-right:8px}
+  .step{display:flex;gap:16px;background:var(--card);border:1px solid var(--line);
+        border-radius:14px;padding:16px 20px;margin-bottom:12px}
+  .num{flex:0 0 30px;height:30px;border-radius:50%;background:var(--pink-soft);
+       color:var(--pink);font-weight:700;text-align:center;line-height:30px;font-size:14px}
+  .step .body{flex:1;min-width:0}
+  .step h3{margin:2px 0 6px;font-size:15.5px}
+  .step p{margin:4px 0;color:var(--sub);font-size:14px}
+  .fill{background:var(--pink-soft);border-radius:7px;padding:7px 11px;margin:8px 0 2px;
+        font-size:13.5px;display:inline-block}
+  code,.mono{font-family:Consolas,"Cascadia Code",monospace;background:var(--code);
+       padding:1px 6px;border-radius:5px;font-size:13px;word-break:break-all}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:10px;
+      padding:14px 16px;white-space:pre-wrap;word-wrap:break-word;font-size:13px;
+      font-family:Consolas,"Cascadia Code",monospace;line-height:1.65;margin:10px 0}
+  table{width:100%;border-collapse:collapse;background:var(--card);
+        border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14px}
+  th,td{padding:10px 13px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--pink-soft);font-weight:600;white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  td:first-child{white-space:nowrap;font-weight:600}
+  ul{margin:8px 0;padding-left:22px;color:var(--sub);font-size:14px}
+  li{margin:5px 0}
+  .ok{color:var(--ok);font-weight:600}
+  .warn{color:var(--warn);font-weight:600}
+  button{background:var(--pink);color:#fff;border:0;border-radius:8px;padding:7px 15px;
+         cursor:pointer;font-size:13px;font-family:inherit}
+  button:hover{opacity:.88}
+  a{color:var(--pink)}
+  footer{margin-top:40px;color:var(--sub);font-size:13px;text-align:center}
+  @media(max-width:600px){.step{padding:13px 14px}header{padding:20px}th,td{padding:8px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>🍮 NuomiLauncher · 微软正版登录配置</h1>
+  <p><span class="badge">应用注册免费</span><span class="badge">审核免费</span>三步：拿到 Entra 目录 → 注册 Azure 应用 → 提交 Mojang AppID 审核</p>
+  <p>启动器本身已经用标准 OAuth 2.0（设备码流 + refresh token），缺的只是<strong>一个属于你自己的应用 ID</strong>。</p>
+</header>
+
+<div class="notice" style="background:#fdeef2;border-left-color:var(--pink)">
+  <b>🆕 2026-11-05 实测新增的「门槛零」：个人微软账号不能直接注册应用了。</b><br>
+  微软自 <strong>2024 年 6 月</strong>起要求「所有应用必须注册在 Microsoft Entra 目录（租户）里」，
+  取消了过去「只关联个人账号、不属于任何目录」的注册方式。只用个人 Microsoft 账号
+  （Outlook / Hotmail / Xbox / 买 MC 的那个账号）登录 Azure 门户，点「新注册」会被直接拦下：
+  <code>在目录外部创建应用程序的功能已被弃用</code>；进 Entra 管理中心还会报
+  <code>AADSTS16000 ... account does not exist in tenant 'Microsoft Services'</code>，
+  目录里用户数 / 应用数全是 0。<strong>先看 ⓪，再回来做 ①。</strong>
+</div>
+
+<div class="notice">
+  <b>⚠️ 必须由你本人操作的步骤：登录微软账号、以及（若走 Azure 免费账号）手机号 / 卡片身份验证。</b><br>
+  账号、密码、验证码、卡片信息只能你自己输，助手不会碰、也不需要你告诉我。做完说一声，
+  剩下的建目录、注册、开权限、复制 ID、写配置都可以交给助手接管。
+</div>
+
+<h2><span>⓪</span>先拿到一个 Microsoft Entra 目录（租户）</h2>
+
+<div class="step"><div class="num">A</div><div class="body">
+  <h3>最省事：你已经有可用的工作 / 学校账号或其它租户</h3>
+  <p>用那个账号登录，或请租户管理员把你加为成员 / 全局管理员。然后在 Azure 门户右上角头像 →
+  <strong>切换目录</strong>，切过去就能直接注册应用。<span class="ok">完全免费、不用绑卡</span>，
+  这条最优先试。</p>
+</div></div>
+
+<div class="step"><div class="num">B</div><div class="body">
+  <h3>普通个人账号的通用解：注册 Azure 免费账号</h3>
+  <div class="fill">🔗 <code>https://azure.microsoft.com/free</code></div>
+  <p>注册后会自动生成一个 <strong>Entra ID Free</strong> 租户（<code>xxx.onmicrosoft.com</code>），
+  你自动成为全局管理员，之后注册应用永久可用、不产生费用。</p>
+  <p class="warn">注意：微软会要求<strong>手机号 + 信用卡做身份验证</strong>（有一笔临时预授权，会退回、不扣费），
+  且卡需为实体卡、不接受预付 / 虚拟卡。这一步只能你本人填，属于「免费但要有卡」的门槛。</p>
+</div></div>
+
+<div class="step"><div class="num">C</div><div class="body">
+  <h3>另外两条（一般不推荐）</h3>
+  <ul>
+    <li><strong>M365 开发人员计划</strong>（E5 sandbox 租户）：2026 年资格已收紧，通常要
+      Visual Studio Professional/Enterprise 订阅或合作伙伴资格，纯个人多半会显示「不符合资格」。</li>
+    <li><strong>External ID 免费试用租户</strong>（<code>aka.ms/ciam-free-trial</code>）：不用绑卡，
+      但只有 <strong>30 天</strong>、到期租户被删，而 Mojang 审核要按周排队，client ID 会跟着失效，
+      只适合临时验证流程。</li>
+  </ul>
+</div></div>
+
+<h2><span>①</span>注册 Azure 应用</h2>
+
+<div class="step"><div class="num">1</div><div class="body">
+  <h3>登录 Azure 门户，确认「当前目录」是真实租户</h3>
+  <p>右上角头像里应显示一个 <code>xxx.onmicrosoft.com</code> 的目录名，而不是一串纯 GUID 的隐式目录。
+  用<strong>买 Minecraft 时那个微软账号</strong>登录（审核表会拿这个邮箱跟 Azure 门户交叉核对）；
+  若你走的是 ⓪-B 新建的租户，用同一账号切过去即可。</p>
+  <p class="warn">✘ 页面上若出现黄色警告条「这些应用程序与账户关联，但不在目录中」，说明 ⓪ 还没过，别往下点了。</p>
+  <div class="fill">🔗 <code>https://portal.azure.com</code></div>
+</div></div>
+
+<div class="step"><div class="num">2</div><div class="body">
+  <h3>进入应用注册页</h3>
+  <p>顶部搜索框输入 <code>Microsoft Entra ID</code> → 左侧菜单 <strong>应用注册 / App registrations</strong> → <strong>新注册 / New registration</strong>。</p>
+  <p>也可以直接走直达链接：<code>https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade</code></p>
+</div></div>
+
+<div class="step"><div class="num">3</div><div class="body">
+  <h3>填名称（有命名禁词，别踩）</h3>
+  <div class="fill">名称：<code>NuomiLauncher</code></div>
+  <p>Mojang 明确要求应用名<strong>不能包含</strong>：Mojang、Minecraft、Microsoft、Live、Xbox、Discord、Hypixel。所以别写成「NuomiMinecraftLauncher」。<code>NuomiLauncher</code> 是合规的，随便换个自己喜欢的名字也行。</p>
+</div></div>
+
+<div class="step"><div class="num">4</div><div class="body">
+  <h3>选「支持的账户类型」——最容易选错的一步</h3>
+  <div class="fill">✅ 选第 3 项：<strong>任何组织目录中的账户和个人 Microsoft 账户</strong><br>（Accounts in any organizational directory and personal Microsoft accounts）</div>
+  <p>第 4 项「<strong>仅个人 Microsoft 账户</strong>」也可以。启动器登录用的是 <code>consumers</code> 端点，必须让个人微软账号能用。</p>
+  <p class="warn">✘ 千万别选第 1 项「仅此组织目录中的账户」，那样个人账号根本登不进来。</p>
+</div></div>
+
+<div class="step"><div class="num">5</div><div class="body">
+  <h3>重定向 URI 留空 → 点「注册 / Register」</h3>
+  <p>设备码流不需要回调地址，留空就行。要是页面非要你选，就选 <em>Mobile and desktop applications</em> 并填 <code>https://login.microsoftonline.com/common/oauth2/nativeclient</code>。</p>
+</div></div>
+
+<div class="step"><div class="num">6</div><div class="body">
+  <h3>打开公共客户端流（不做这步等于白注册）</h3>
+  <p>创建完成后进左侧 <strong>身份验证 / Authentication</strong> → 往下找到 <strong>允许公共客户端流 / Allow public client flows</strong> → 设为 <strong>Yes</strong> → <strong>保存</strong>。</p>
+  <p class="warn">✘ 不开这个，设备码流仍会报 <code>AADSTS700016 unauthorized_client</code>。</p>
+</div></div>
+
+<div class="step"><div class="num">7</div><div class="body">
+  <h3>回到「概览 / Overview」，抄下两个 ID</h3>
+  <ul>
+    <li><span class="ok">应用程序(客户端) ID / Application (client) ID</span> —— 启动器要填的就是它</li>
+    <li><span class="ok">目录(租户) ID / Directory (tenant) ID</span> —— Mojang 审核表单必填，别忘了</li>
+  </ul>
+  <p>两个都是 UUID 格式。<strong>别拿成「对象 ID / Object ID」</strong>，那个没用。</p>
+</div></div>
+
+<h2><span>②</span>提交 Mojang AppID 审核</h2>
+
+<p style="color:var(--sub);font-size:14px">新注册的 Azure 应用默认没权限调 Minecraft Java API，<code>login_with_xbox</code> 会 403 <code>Invalid app registration</code>。必须去
+<a href="https://aka.ms/mce-reviewappid" target="_blank">aka.ms/mce-reviewappid</a> 提交一次审核，<strong>每周审一批</strong>，重复提交不会更快。下面按表单真实字段逐项填：</p>
+
+<table>
+<tr><th>表单字段</th><th>填什么</th></tr>
+<tr><td>1. 已阅读 EULA 与使用指南</td><td>选 <strong>Yes</strong>（<a href="http://aka.ms/mcusageguidelines" target="_blank">aka.ms/mcusageguidelines</a>）</td></tr>
+<tr><td>2. Contact Information</td><td>注册 Azure 应用时用的那个微软账号邮箱</td></tr>
+<tr><td>3. What type of request</td><td><strong>New AppID for Approval</strong></td></tr>
+<tr><td>4. Application Name</td><td><code>NuomiLauncher</code>（和 Azure 里一致，不含禁用词）</td></tr>
+<tr><td>5. Application ID</td><td>第 7 步抄的 <strong>Application (client) ID</strong>，一次只提交一个</td></tr>
+<tr><td>6. Tenant ID</td><td>第 7 步抄的 <strong>Directory (tenant) ID</strong>（新应用必填）</td></tr>
+<tr><td>7. Associated website or domain</td><td><code>https://github.com/Ryan-cpu-lang/NuomiLauncher</code></td></tr>
+<tr><td>8. Justification</td><td>用下面这段英文模板</td></tr>
+<tr><td>9. Any other information</td><td>留空或填 <code>N/A</code></td></tr>
+</table>
+
+<p style="margin-top:16px;font-size:14px"><strong>第 8 项 Justification 模板</strong>（表单是英文，用英文更容易过；重点强调「不绕过正版验证」，这是官方最看重的）：</p>
+<button onclick="copyText()">📋 复制这段</button>
+<pre id="just">NuomiLauncher is an open-source, non-commercial Minecraft launcher written in the Nuomi programming language. We request access to the Minecraft Java Edition Game Service APIs so that legitimate game owners can sign in with their own Microsoft account (OAuth 2.0 Device Authorization Grant, RFC 8628) and launch the Java Edition they have purchased.
+
+The launcher always performs the full Microsoft -> Xbox Live -> XSTS -> Minecraft Services authentication chain and verifies game ownership before starting the game. It does not bypass, disable, or weaken any authentication, ownership, or license check, and it works normally with online-mode servers. No game assets are redistributed; all downloads come from Mojang's official endpoints or public mirrors.
+
+Source code: https://github.com/Ryan-cpu-lang/NuomiLauncher</pre>
+
+<div class="notice">
+  <b>合规底线：</b>官方明确写了「应用必须验证用户拥有游戏、并在进入游戏前要求认证」，绕过正版验证的启动器一律不批。NuomiLauncher 走的就是完整正版链路，这点没问题 👌
+</div>
+
+<h2><span>③</span>拿到 client ID 之后</h2>
+
+<div class="step"><div class="num">A</div><div class="body">
+  <h3>填进启动器</h3>
+  <p>GUI：侧栏「账户登录」→ <strong>微软 client_id</strong> 输入框 → 粘贴 → 「保存」。<br>
+  或者直接写文件：<code>%USERPROFILE%\.nuomi-mc\ms_client_id.txt</code>（纯一行 UUID，不要引号、不要空格）。</p>
+  <p>把 ID 发给助手也可以，助手会直接帮你写好并验证。</p>
+</div></div>
+
+<div class="step"><div class="num">B</div><div class="body">
+  <h3>审核批下来前</h3>
+  <p>微软登录会卡在 <code>login_with_xbox</code> 403，这是正常的等待状态，不是代码 bug。这段时间 <strong>LittleSkin 外置登录</strong>和<strong>离线模式</strong>都照常用。</p>
+  <p>通过之后点「使用微软账号登录」→ 浏览器自动打开 → 设备码已自动进剪贴板，Ctrl+V 即可；之后过期了点右边的「<strong>刷新</strong>」静默续期，不用再开浏览器。</p>
+</div></div>
+
+<h2><span>⚠️</span>常见坑速查</h2>
+<ul>
+  <li><strong>点「新注册」弹「在目录外部创建应用程序的功能已被弃用」</strong> → 2024-06 起的平台变更，个人账号没有 Entra 租户；回到 ⓪ 先建目录，换浏览器 / 重登都无效。</li>
+  <li><code>AADSTS16000 ... account does not exist in tenant 'Microsoft Services'</code> → 同上，Entra 管理中心对个人 MSA 账号拿不到目录令牌。</li>
+  <li><code>unauthorized_client / AADSTS700016</code> → 公共客户端流没开 Yes，或还在使用已被下架的公共 ID <code>00000000402b5328</code>。</li>
+  <li>登录时提示账号类型不支持 → 「支持的账户类型」选成了仅组织目录，回去改成含「个人 Microsoft 账户」那项。</li>
+  <li><code>Invalid app registration / 403</code> → Mojang 审核还没通过，只能等。</li>
+  <li>审核表单被打回 → 多半是应用名含禁用词，或 Justification 没写清「验证游戏所有权」。</li>
+  <li>tenant ID 别填到启动器里：代码用的是固定的 <code>consumers</code> 端点，自己的 Directory (tenant) ID 只是给审核表单用的。</li>
+</ul>
+
+<footer>
+  NuomiLauncher · Ryan-cpu-lang · 最后更新 2026-11-05 · 本页可离线打开，不加载任何外部资源
+</footer>
+
+</div>
+<script>
+function copyText(){
+  var t=document.getElementById('just').innerText;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(function(){alert('已复制，去表单第 8 项粘贴即可 🍮')});
+  }else{
+    var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);
+    a.select();document.execCommand('copy');document.body.removeChild(a);
+    alert('已复制 🍮');
+  }
+}
+</script>
+</body>
+</html>
