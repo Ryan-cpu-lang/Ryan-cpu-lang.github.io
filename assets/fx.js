@@ -50,7 +50,13 @@
   });
 
   /* ---------- 参与特效的元素 ---------- */
-  var tilts = [].slice.call(document.querySelectorAll('.card,.prod,.doc,.step'));
+  /* .mock 是教程页里"模拟启动器界面"的展示块，里面的按钮不是真交互元素，
+     不参与流光/倾斜；data-fx-* 让任意页面可以按需挂特效而不改选择器。 */
+  var pick = function (sel) {
+    return [].slice.call(document.querySelectorAll(sel))
+      .filter(function (el) { return !el.closest('.mock'); });
+  };
+  var tilts = pick('.card,.prod,.doc,.step,[data-fx-tilt]');
   tilts.forEach(function (el) {
     el.classList.add('fx-tilt');
     if (window.getComputedStyle(el).position === 'static') el.style.position = 'relative';
@@ -60,10 +66,10 @@
     el.insertBefore(shine, el.firstChild);
   });
 
-  var btns = [].slice.call(document.querySelectorAll('.btn,.tab'));
+  var btns = pick('.btn,.tab,[data-fx-btn]');
   btns.forEach(function (el) { el.classList.add('fx-btn'); });
 
-  var pars = [].slice.call(document.querySelectorAll('.badge-row,.hero-t,.mascot,.stats'));
+  var pars = pick('.badge-row,.hero-t,.mascot,.stats,[data-fx-par]');
   pars.forEach(function (el) { el.classList.add('fx-par'); });
 
   /* 关键：等 reveal 淡入（0~180ms 延迟 + 650ms 动画）结束后才接管 transform，
@@ -90,7 +96,10 @@
   var target = null, curTilt = null, curBtn = null, hovering = false;
   var awake = false, lastPop = 0;
   var lastX = -1, lastY = -1, lastTarget = null;
-  var COLORS = ['#8b6cff', '#4c9aff', '#45d6c0', '#ff7aa8', '#ffc46b'];
+  /* 白底上偏亮的黄/青会看不见，浅色文档页换一组更饱和的 */
+  var COLORS = body.classList.contains('fx-light')
+    ? ['#d9647f', '#8b6cff', '#3a6ea5', '#2e8b6b', '#c9861a']
+    : ['#8b6cff', '#4c9aff', '#45d6c0', '#ff7aa8', '#ffc46b'];
 
   function closest(sel) {
     return (target && target.closest) ? target.closest(sel) : null;

@@ -124,3 +124,42 @@ body.fx-off #fxToggle:hover{opacity:.9}
   .fx-shine,.fx-ripple,.fx-pop,.fx-btn::after{display:none!important}
   .fx-par{translate:0 0}
 }
+
+/* ============================================================
+   9. 浅色文档页适配（微软登录教程 / Azure 指南）
+   文档页在 <body> 上带 .fx-light；深色页的紫蓝光在白底上会发灰，
+   这里整套换成粉紫系，并补齐开关按钮缺失的 CSS 变量。
+   ============================================================ */
+body.fx-light #fxGlow{
+  background:radial-gradient(circle,
+    rgba(217,100,127,.13) 0%,
+    rgba(139,108,255,.065) 38%,
+    rgba(76,154,255,.025) 56%,
+    transparent 72%);
+}
+body.fx-light #fxDot{
+  background:#d9647f;
+  box-shadow:0 0 10px 2px rgba(217,100,127,.7),0 0 22px rgba(139,108,255,.32);
+}
+body.fx-light #fxRing{border-color:rgba(217,100,127,.55)}
+body.fx-light.fx-hover #fxRing{
+  border-color:#8b6cff;background:rgba(217,100,127,.10);
+}
+body.fx-light .fx-shine{
+  background:radial-gradient(300px circle at var(--mx) var(--my),
+             rgba(217,100,127,.13),transparent 68%);
+}
+body.fx-light .fx-btn::after{
+  background:radial-gradient(130px circle at var(--mx,50%) var(--my,50%),
+             rgba(217,100,127,.20),transparent 72%);
+}
+body.fx-light .fx-ripple{
+  background:radial-gradient(circle,rgba(217,100,127,.38),
+             rgba(139,108,255,.18) 50%,transparent 72%);
+}
+body.fx-light #fxToggle{
+  right:20px;bottom:78px;
+  border-color:#eadde2;background:#fff;color:#d9647f;
+  box-shadow:0 8px 24px rgba(160,110,125,.18);
+}
+body.fx-light #fxToggle:hover{border-color:#d9647f}

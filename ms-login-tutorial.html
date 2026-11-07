@@ -4,85 +4,217 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NuomiLauncher · 微软正版账号登录教程</title>
+<meta name="description" content="端到端讲清 NuomiLauncher 微软正版账号登录：Entra 目录、Azure 应用注册、Mojang AppID 审核，以及在启动器里逐步操作。">
+<meta property="og:title" content="NuomiLauncher · 微软正版账号登录教程">
+<meta property="og:description" content="从零配好微软正版登录，照着点就能登。">
+<meta property="og:type" content="article">
 <style>
-  :root{
-    --bg:#faf7f8; --card:#ffffff; --ink:#2f2a30; --sub:#6f6670;
-    --pink:#d9647f; --pink-soft:#fdeef2; --line:#efe6e9;
-    --ok:#2e8b6b; --warn:#b5691a; --code:#f6f2f4; --blue:#3a6ea5;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;padding:32px 18px 80px;background:var(--bg);color:var(--ink);
-       font-family:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;
-       line-height:1.75;font-size:15px}
-  .wrap{max-width:880px;margin:0 auto}
-  header{background:linear-gradient(135deg,#fff 0%,var(--pink-soft) 100%);
-         border:1px solid var(--line);border-radius:18px;padding:26px 30px;margin-bottom:22px}
-  h1{margin:0 0 6px;font-size:25px;letter-spacing:.3px}
-  header p{margin:4px 0;color:var(--sub)}
-  .badge{display:inline-block;background:var(--pink);color:#fff;border-radius:20px;
-         padding:2px 12px;font-size:12px;margin-right:8px;vertical-align:2px}
-  .badge.b{background:var(--blue)}
-  .notice{background:#fff8e9;border-left:4px solid #e2a13a;border-radius:8px;
-          padding:14px 18px;margin:18px 0;font-size:14px}
-  .notice b{color:var(--warn)}
-  .okbox{background:#eafaf3;border-left:4px solid var(--ok);border-radius:8px;
-          padding:14px 18px;margin:18px 0;font-size:14px}
-  .okbox b{color:var(--ok)}
-  h2{font-size:19px;margin:34px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--line)}
-  h2 span{color:var(--pink);margin-right:8px}
-  h3{font-size:15.5px;margin:18px 0 8px}
-  .step{display:flex;gap:16px;background:var(--card);border:1px solid var(--line);
-        border-radius:14px;padding:16px 20px;margin-bottom:12px}
-  .num{flex:0 0 30px;height:30px;border-radius:50%;background:var(--pink-soft);
-       color:var(--pink);font-weight:700;text-align:center;line-height:30px;font-size:14px}
-  .step .body{flex:1;min-width:0}
-  .step h3{margin:2px 0 6px}
-  .step p{margin:4px 0;color:var(--sub);font-size:14px}
-  .fill{background:var(--pink-soft);border-radius:7px;padding:7px 11px;margin:8px 0 2px;
-        font-size:13.5px;display:inline-block}
-  code,.mono{font-family:Consolas,"Cascadia Code",monospace;background:var(--code);
-       padding:1px 6px;border-radius:5px;font-size:13px;word-break:break-all}
-  pre{background:var(--code);border:1px solid var(--line);border-radius:10px;
-      padding:14px 16px;white-space:pre-wrap;word-wrap:break-word;font-size:13px;
-      font-family:Consolas,"Cascadia Code",monospace;line-height:1.65;margin:10px 0}
-  table{width:100%;border-collapse:collapse;background:var(--card);
-        border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14px}
-  th,td{padding:10px 13px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
-  th{background:var(--pink-soft);font-weight:600;white-space:nowrap}
-  tr:last-child td{border-bottom:none}
-  td:first-child{white-space:nowrap;font-weight:600}
-  ul{margin:8px 0;padding-left:22px;color:var(--sub);font-size:14px}
-  li{margin:5px 0}
-  .ok{color:var(--ok);font-weight:600}
-  .warn{color:var(--warn);font-weight:600}
-  .link{background:var(--pink-soft);border:1px solid var(--line);border-radius:10px;
-        padding:12px 16px;margin:14px 0;font-size:14px}
-  .link a{color:var(--pink);font-weight:600}
-  /* 模拟启动器界面 */
-  .mock{background:#2b2b33;color:#eee;border-radius:14px;padding:20px;margin:14px 0;
-        font-family:"Microsoft YaHei",sans-serif;font-size:13.5px}
-  .mock .tt{color:#f6c;font-size:15px;font-weight:700;margin-bottom:12px}
-  .mock .row{display:flex;align-items:center;gap:10px;margin:10px 0}
-  .mock label{width:130px;color:#bbb}
-  .mock .inp{flex:1;background:#1f1f26;border:1px solid #444;border-radius:7px;
-             padding:7px 10px;color:#9fe;font-family:Consolas,monospace;font-size:12.5px}
-  .mock .btn{background:linear-gradient(135deg,#d9647f,#e8789a);color:#fff;border:0;
-             border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600}
-  .mock .btn.s{background:#3a6ea5}
-  .mock .hint{color:#9a9;font-size:12px;margin-top:8px}
-  a{color:var(--pink)}
-  footer{margin-top:40px;color:var(--sub);font-size:13px;text-align:center;line-height:1.9}
-  .toc{background:var(--card);border:1px solid var(--line);border-radius:14px;
-       padding:16px 22px;margin:18px 0;font-size:14px}
-  .toc b{color:var(--pink)}
-  .toc ol{margin:8px 0 0;padding-left:22px}
-  .toc li{margin:4px 0}
-  @media(max-width:600px){.step{padding:13px 14px}header{padding:20px}th,td{padding:8px}}
+:root{
+  --bg:#faf7f8; --card:#ffffff; --ink:#2f2a30; --sub:#6f6670;
+  --pink:#d9647f; --pink-soft:#fdeef2; --line:#efe6e9;
+  --ok:#2e8b6b; --warn:#b5691a; --blue:#3a6ea5;
+  --grad:linear-gradient(120deg,#d9647f,#a86bd6 55%,#4c9aff);
+  --shadow:0 12px 34px rgba(160,110,125,.12);
+  --sans:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:92px}
+body{margin:0;padding:28px 18px 90px;color:var(--ink);font-family:var(--sans);
+  line-height:1.8;font-size:15px;-webkit-font-smoothing:antialiased;
+  background-color:var(--bg);
+  background-image:
+    radial-gradient(760px 420px at 5% -8%,rgba(217,100,127,.10),transparent 62%),
+    radial-gradient(680px 420px at 98% 4%,rgba(139,108,255,.085),transparent 60%),
+    linear-gradient(rgba(217,100,127,.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(217,100,127,.022) 1px,transparent 1px);
+  background-size:auto,auto,36px 36px,36px 36px;background-attachment:fixed}
+.wrap{max-width:920px;margin:0 auto}
+a{color:var(--pink);text-decoration:none;
+  background-image:linear-gradient(var(--pink),var(--pink));
+  background-size:0 1px;background-repeat:no-repeat;background-position:0 100%;
+  transition:background-size .2s,color .2s}
+a:hover{background-size:100% 1px}
+::selection{background:rgba(217,100,127,.22)}
+:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:5px}
+
+/* ---------- 阅读进度 / 当前章节 / 回顶 ---------- */
+#readProgress{position:fixed;top:0;left:0;height:3px;width:0;z-index:120;
+  background:var(--grad);box-shadow:0 0 12px rgba(217,100,127,.6);transition:width .08s linear}
+#chapterBar{position:fixed;left:50%;bottom:20px;
+  transform:translate(-50%,160%);z-index:70;
+  padding:7px 18px;border-radius:999px;font-size:12.5px;font-weight:700;
+  background:rgba(255,255,255,.9);border:1px solid #f0dfe5;color:#a04c66;
+  box-shadow:0 8px 26px rgba(160,110,125,.18);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  transition:transform .32s cubic-bezier(.2,.8,.3,1);
+  pointer-events:none;white-space:nowrap;max-width:82vw;overflow:hidden;text-overflow:ellipsis}
+#chapterBar.show{transform:translate(-50%,0)}
+#backTop{position:fixed;right:20px;bottom:20px;z-index:90;
+  width:42px;height:42px;border-radius:13px;border:1px solid #f0dfe5;
+  background:#fff;color:var(--pink);font-size:18px;cursor:pointer;
+  opacity:0;pointer-events:none;transition:.25s;
+  box-shadow:0 8px 24px rgba(160,110,125,.18)}
+#backTop.show{opacity:1;pointer-events:auto}
+#backTop:hover{transform:translateY(-3px);border-color:var(--pink)}
+
+/* ---------- Hero ---------- */
+header.hero{position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#fff 0%,#fdeef2 58%,#f2eaff 100%);
+  border:1px solid #f2e2e8;border-radius:22px;
+  padding:34px 36px 30px;margin-bottom:24px;box-shadow:var(--shadow)}
+header.hero::after{content:"";position:absolute;width:280px;height:280px;
+  right:-90px;top:-140px;border-radius:50%;
+  background:radial-gradient(circle,rgba(217,100,127,.16),transparent 70%);pointer-events:none}
+header.hero h1{position:relative;margin:0 0 10px;
+  font-size:clamp(24px,3.4vw,32px);letter-spacing:.3px;font-weight:820}
+header.hero p{position:relative;margin:6px 0;color:var(--sub)}
+.hero-meta{position:relative;display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
+.hero-meta span{font-size:12px;font-weight:650;color:#8c6a75;
+  background:rgba(255,255,255,.74);border:1px solid #f0dfe5;
+  padding:4px 11px;border-radius:999px}
+.hero-cta{position:relative;display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;
+  border-radius:11px;font-size:13.5px;font-weight:700;background-image:none;
+  cursor:pointer;white-space:nowrap;border:1px solid transparent;
+  transition:transform .18s,box-shadow .18s,background .18s}
+.btn:hover{background-size:0 1px;transform:translateY(-2px)}
+.btn.pri{background:var(--grad);color:#fff;box-shadow:0 10px 26px rgba(217,100,127,.3)}
+.btn.pri:hover{box-shadow:0 14px 32px rgba(217,100,127,.44)}
+.btn.sec{background:rgba(255,255,255,.82);border-color:#f0dfe5;color:#a04c66}
+.btn.sec:hover{background:#fff}
+.badge{display:inline-block;background:var(--pink);color:#fff;border-radius:20px;
+  padding:3px 12px;font-size:12px;margin:0 8px 6px 0;vertical-align:2px;font-weight:650}
+.badge.b{background:var(--blue)}
+
+/* ---------- 提示框 ---------- */
+.notice,.okbox{position:relative;border-radius:14px;padding:16px 20px 16px 22px;
+  margin:20px 0;font-size:14px;box-shadow:0 4px 16px rgba(160,110,125,.06)}
+.notice{background:#fffaf0;border:1px solid #f5e2bf;border-left:4px solid #e2a13a}
+.okbox{background:#f0fbf6;border:1px solid #cbeedd;border-left:4px solid var(--ok)}
+.notice b{color:var(--warn)}
+.okbox b{color:var(--ok)}
+
+/* ---------- 标题 ---------- */
+h2{font-size:20px;font-weight:800;margin:42px 0 16px;padding:0 0 10px;
+  border-bottom:2px solid var(--line);scroll-margin-top:92px;position:relative}
+h2::after{content:"";position:absolute;left:0;bottom:-2px;width:64px;height:2px;background:var(--grad)}
+h2 span{display:inline-flex;align-items:center;justify-content:center;
+  min-width:28px;height:28px;margin-right:10px;border-radius:9px;
+  background:var(--pink-soft);color:var(--pink);font-size:15px;font-weight:800;vertical-align:2px}
+h3{font-size:16px;margin:22px 0 9px;font-weight:750}
+p{margin:10px 0}
+
+/* ---------- 目录 ---------- */
+.toc{background:rgba(255,255,255,.9);border:1px solid #f0dfe5;border-radius:18px;
+  padding:20px 24px;margin:22px 0;font-size:14px;box-shadow:var(--shadow)}
+.toc>b{display:block;color:var(--pink);font-size:14.5px;margin-bottom:8px}
+.toc ol{margin:8px 0 0;padding-left:22px;columns:2;column-gap:28px}
+.toc li{margin:6px 0;break-inside:avoid}
+.toc a{color:var(--sub);background-image:none;transition:color .18s}
+.toc a:hover,.toc a.cur{color:var(--pink);font-weight:700}
+.toc a.cur::before{content:"▸ ";color:var(--pink)}
+@media(max-width:640px){.toc ol{columns:1}}
+
+/* ---------- 步骤卡 ---------- */
+.step{position:relative;display:flex;gap:16px;background:var(--card);
+  border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin-bottom:14px;
+  box-shadow:0 4px 16px rgba(160,110,125,.05);
+  transition:border-color .2s,box-shadow .2s}
+.step::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;
+  border-radius:0 3px 3px 0;background:var(--grad);opacity:.55}
+.step:hover{border-color:#eec4d1;box-shadow:var(--shadow)}
+.num{flex:0 0 32px;height:32px;border-radius:11px;color:#fff;font-weight:800;
+  text-align:center;line-height:32px;font-size:14px;background:var(--grad);
+  box-shadow:0 5px 14px rgba(217,100,127,.25)}
+.step .body{flex:1;min-width:0}
+.step h3{margin:2px 0 6px}
+.step p{margin:4px 0;color:var(--sub);font-size:14px}
+.fill{background:var(--pink-soft);border:1px solid #f7dce5;border-radius:9px;
+  padding:8px 12px;margin:10px 0 2px;font-size:13.5px;display:inline-block}
+
+/* ---------- 代码 ---------- */
+code,.mono{font-family:Consolas,"Cascadia Code",monospace;background:#f9edf1;
+  color:#b94d6c;padding:2px 6px;border-radius:5px;font-size:12.8px;word-break:break-all}
+.codebox{position:relative;margin:14px 0}
+pre{background:#2b2733;color:#f2ecf3;border:1px solid #3a3442;border-radius:14px;
+  padding:18px;white-space:pre-wrap;word-wrap:break-word;font-size:12.8px;
+  font-family:Consolas,"Cascadia Code",monospace;line-height:1.75;margin:0;
+  box-shadow:0 10px 28px rgba(43,39,51,.18)}
+pre code{background:none;color:inherit;padding:0;font-size:inherit}
+.copy-pre{position:absolute;right:10px;top:10px;z-index:2;
+  border:1px solid #4c4557;background:rgba(255,255,255,.08);color:#e9dfe9;
+  border-radius:8px;padding:5px 11px;font-size:12px;font-family:var(--sans);
+  cursor:pointer;transition:.18s}
+.copy-pre:hover{background:rgba(255,255,255,.18);border-color:#8b7f99}
+
+/* ---------- 表格 ---------- */
+.tablewrap{overflow-x:auto;border-radius:14px;box-shadow:0 4px 16px rgba(160,110,125,.06);margin:16px 0}
+table{width:100%;border-collapse:collapse;background:var(--card);
+  border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:14px}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:linear-gradient(120deg,#fdeef2,#f6eeff);font-weight:750;
+  white-space:nowrap;color:#8b4a60}
+tbody tr{transition:background .15s}
+tbody tr:hover{background:#fff6f9}
+tr:last-child td{border-bottom:none}
+td:first-child{white-space:nowrap;font-weight:650}
+
+ul{margin:10px 0;padding-left:22px;color:var(--sub);font-size:14px}
+li{margin:6px 0}
+.ok{color:var(--ok);font-weight:650}
+.warn{color:var(--warn);font-weight:650}
+.link{background:linear-gradient(120deg,#fff,#fdeef2);border:1px solid #f3dfe7;
+  border-radius:13px;padding:14px 18px;margin:16px 0;font-size:14px}
+.link a{font-weight:700}
+
+/* ---------- 模拟启动器界面 ---------- */
+.mock{position:relative;background:#2b2b33;color:#eee;border-radius:16px;
+  padding:20px;margin:16px 0;font-family:var(--sans);font-size:13.5px;
+  box-shadow:0 14px 34px rgba(43,43,51,.22)}
+.mock::before{content:"●  ●  ●";display:block;color:#6b6472;font-size:10px;
+  letter-spacing:2px;margin-bottom:12px}
+.mock .tt{color:#f8a;font-size:15px;font-weight:750;margin-bottom:12px}
+.mock .row{display:flex;align-items:center;gap:10px;margin:10px 0}
+.mock label{width:130px;color:#bbb;flex:none}
+.mock .inp{flex:1;background:#1f1f26;border:1px solid #444;border-radius:7px;
+  padding:7px 10px;color:#9fe;font-family:Consolas,monospace;font-size:12.5px}
+.mock .btn{background:linear-gradient(135deg,#d9647f,#e8789a);color:#fff;border:0;
+  border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;box-shadow:none}
+.mock .btn.s{background:#3a6ea5}
+.mock .btn:hover{transform:none;box-shadow:none}
+.mock .hint{color:#9a9;font-size:12px;margin-top:8px}
+
+footer{margin-top:48px;padding-top:22px;border-top:1px solid var(--line);
+  color:var(--sub);font-size:13px;text-align:center;line-height:2}
+
+@media(max-width:640px){
+  body{padding:16px 12px 80px}
+  header.hero{padding:24px 20px}
+  .step{padding:14px 16px}
+  th,td{padding:9px 10px}
+  .toc{padding:16px 18px}
+  .mock label{width:100px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+@media print{
+  #readProgress,#chapterBar,#backTop,#fxToggle,.sitebar,.copy-pre,.hero-cta{display:none!important}
+  body{background:#fff;padding:0}
+  .step,.toc,header.hero,pre,table{box-shadow:none;break-inside:avoid}
+  a{color:var(--ink);background-image:none}
+  pre{background:#f6f2f4;color:#2f2a30;border-color:#ddd}
+}
 </style>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-<link rel="stylesheet" href="assets/sitebar.css">
+<link rel="stylesheet" href="assets/sitebar.css?v=2">
+<link rel="stylesheet" href="assets/fx.css?v=2">
 </head>
-<body>
+<body class="fx-light">
+<div id="readProgress" aria-hidden="true"></div>
+<div id="chapterBar">📖 微软正版账号登录教程</div>
+<button id="backTop" aria-label="回到顶部">↑</button>
 <div class="wrap">
 <div class="sitebar">
   <a class="sb-brand" href="index.html"><span class="dot"></span>Nuomi 糯米语言</a>
@@ -96,10 +228,21 @@
 </div>
 
 
-<header>
+<header class="hero" data-fx-par>
   <h1>微软正版账号登录教程</h1>
   <p><span class="badge">NuomiLauncher</span><span class="badge b">端到端 · 照着点就能登</span></p>
-  <p>本教程把「为什么不能直接登录 → 准备材料 → 在启动器里登录」一次性串清楚。最后更新 2026-11-05。</p>
+  <p>本教程把「为什么不能直接登录 → 准备材料 → 在启动器里登录」一次性串清楚。</p>
+  <div class="hero-meta">
+    <span>📅 最后更新 2026-11-05</span>
+    <span>⏱ 阅读约 8 分钟</span>
+    <span>🎯 面向正版账号玩家</span>
+    <span>✅ LittleSkin 用户无需看</span>
+  </div>
+  <div class="hero-cta">
+    <a class="btn pri" data-fx-btn href="#s4">🚀 直接跳到「启动器里登录」</a>
+    <a class="btn sec" data-fx-btn href="azure-appid-guide.html">📖 Azure 注册图文详解</a>
+    <a class="btn sec" data-fx-btn href="launcher.html">🎮 启动器主页</a>
+  </div>
 </header>
 
 <div class="okbox">
@@ -115,7 +258,7 @@
   这三步都是<b>一次性配置</b>，配好之后永久免维护。它们不是启动器的 bug，换任何启动器都一样。
 </div>
 
-<div class="toc">
+<div class="toc" data-fx-tilt>
   <b>📑 目录</b>
   <ol>
     <li><a href="#s0">开始前：为什么必须自己弄（上面已讲）</a></li>
@@ -260,11 +403,71 @@ Mojang's official endpoints or public mirrors."</pre>
 
 <footer>
   NuomiLauncher · Ryan-cpu-lang · 最后更新 2026-11-05<br>
-  本页可离线双击打开，不加载任何外部资源。<br>
+  正文与排版完全自包含，<b>离线双击也能读</b>；联网时额外启用站点顶栏与鼠标特效。<br>
   应用注册每一步图文详解请看 <a href="./azure-appid-guide.html">azure-appid-guide.html</a> ·
   完整文档见仓库 <a href="https://github.com/Ryan-cpu-lang/NuomiLauncher/blob/main/README.md">README.md</a>
 </footer>
 
 </div>
+<script>
+(function(){
+  'use strict';
+  var prog=document.getElementById('readProgress'),
+      top=document.getElementById('backTop'),
+      chap=document.getElementById('chapterBar');
+  function onScroll(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+    prog.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+    top.classList.toggle('show',h.scrollTop>420);
+    chap.classList.toggle('show',h.scrollTop>320);
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  top.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+
+  /* 目录随滚动高亮 + 底部胶囊显示当前章节 */
+  var links=[].slice.call(document.querySelectorAll('.toc a[href^="#"]')),
+      map={},heads=[].slice.call(document.querySelectorAll('h2[id]'));
+  links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a});
+  if('IntersectionObserver' in window&&heads.length){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(!e.isIntersecting)return;
+        links.forEach(function(a){a.classList.remove('cur')});
+        var a=map[e.target.id];if(a)a.classList.add('cur');
+        chap.textContent='📖 '+e.target.textContent.trim().replace(/^[⓪①②③④⑤⑥⚠️]+\s*/,'');
+      });
+    },{rootMargin:'-18% 0px -70% 0px'});
+    heads.forEach(function(h){io.observe(h)});
+  }
+
+  function fallback(t,cb){
+    var a=document.createElement('textarea');a.value=t;a.style.position='fixed';
+    a.style.opacity='0';document.body.appendChild(a);a.select();
+    try{document.execCommand('copy');cb()}catch(e){}
+    document.body.removeChild(a);
+  }
+  /* 代码块：包一层容器 + 复制按钮 */
+  [].slice.call(document.querySelectorAll('pre')).forEach(function(pre){
+    var box=document.createElement('div');box.className='codebox';
+    pre.parentNode.insertBefore(box,pre);box.appendChild(pre);
+    var b=document.createElement('button');b.className='copy-pre';
+    b.type='button';b.textContent='复制';
+    b.addEventListener('click',function(){
+      var done=function(){b.textContent='已复制 ✓';setTimeout(function(){b.textContent='复制'},1400)};
+      if(navigator.clipboard&&window.isSecureContext)
+        navigator.clipboard.writeText(pre.textContent).then(done).catch(function(){fallback(pre.textContent,done)});
+      else fallback(pre.textContent,done);
+    });
+    box.appendChild(b);
+  });
+  /* 宽表格在窄屏可横向滚动 */
+  [].slice.call(document.querySelectorAll('table')).forEach(function(t){
+    if(t.parentNode.classList.contains('tablewrap'))return;
+    var w=document.createElement('div');w.className='tablewrap';
+    t.parentNode.insertBefore(w,t);w.appendChild(t);
+  });
+})();
+</script>
+<script src="assets/fx.js?v=2"></script>
 </body>
 </html>

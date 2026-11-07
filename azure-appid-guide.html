@@ -56,11 +56,13 @@
   a{color:var(--pink)}
   footer{margin-top:40px;color:var(--sub);font-size:13px;text-align:center}
   @media(max-width:600px){.step{padding:13px 14px}header{padding:20px}th,td{padding:8px}}
+  h2{scroll-margin-top:92px}
 </style>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-<link rel="stylesheet" href="assets/sitebar.css">
+<link rel="stylesheet" href="assets/sitebar.css?v=2">
+<link rel="stylesheet" href="assets/fx.css?v=2">
 </head>
-<body>
+<body class="fx-light">
 <div class="wrap">
 <div class="sitebar">
   <a class="sb-brand" href="index.html"><span class="dot"></span>Nuomi 糯米语言</a>
@@ -74,7 +76,7 @@
 </div>
 
 
-<header>
+<header data-fx-par>
   <h1>🍮 NuomiLauncher · 微软正版登录配置</h1>
   <p><span class="badge">应用注册免费</span><span class="badge">审核免费</span>三步：拿到 Entra 目录 → 注册 Azure 应用 → 提交 Mojang AppID 审核</p>
   <p>启动器本身已经用标准 OAuth 2.0（设备码流 + refresh token），缺的只是<strong>一个属于你自己的应用 ID</strong>。</p>
@@ -96,7 +98,7 @@
   剩下的建目录、注册、开权限、复制 ID、写配置都可以交给助手接管。
 </div>
 
-<h2><span>⓪</span>先拿到一个 Microsoft Entra 目录（租户）</h2>
+<h2 id="s0"><span>⓪</span>先拿到一个 Microsoft Entra 目录（租户）</h2>
 
 <div class="step"><div class="num">A</div><div class="body">
   <h3>最省事：你已经有可用的工作 / 学校账号或其它租户</h3>
@@ -125,7 +127,7 @@
   </ul>
 </div></div>
 
-<h2><span>①</span>注册 Azure 应用</h2>
+<h2 id="s1"><span>①</span>注册 Azure 应用</h2>
 
 <div class="step"><div class="num">1</div><div class="body">
   <h3>登录 Azure 门户，确认「当前目录」是真实租户</h3>
@@ -175,7 +177,7 @@
   <p>两个都是 UUID 格式。<strong>别拿成「对象 ID / Object ID」</strong>，那个没用。</p>
 </div></div>
 
-<h2><span>②</span>提交 Mojang AppID 审核</h2>
+<h2 id="s2"><span>②</span>提交 Mojang AppID 审核</h2>
 
 <p style="color:var(--sub);font-size:14px">新注册的 Azure 应用默认没权限调 Minecraft Java API，<code>login_with_xbox</code> 会 403 <code>Invalid app registration</code>。必须去
 <a href="https://aka.ms/mce-reviewappid" target="_blank">aka.ms/mce-reviewappid</a> 提交一次审核，<strong>每周审一批</strong>，重复提交不会更快。下面按表单真实字段逐项填：</p>
@@ -194,7 +196,7 @@
 </table>
 
 <p style="margin-top:16px;font-size:14px"><strong>第 8 项 Justification 模板</strong>（表单是英文，用英文更容易过；重点强调「不绕过正版验证」，这是官方最看重的）：</p>
-<button onclick="copyText()">📋 复制这段</button>
+<button data-fx-btn onclick="copyText()">📋 复制这段</button>
 <pre id="just">NuomiLauncher is an open-source, non-commercial Minecraft launcher written in the Nuomi programming language. We request access to the Minecraft Java Edition Game Service APIs so that legitimate game owners can sign in with their own Microsoft account (OAuth 2.0 Device Authorization Grant, RFC 8628) and launch the Java Edition they have purchased.
 
 The launcher always performs the full Microsoft -> Xbox Live -> XSTS -> Minecraft Services authentication chain and verifies game ownership before starting the game. It does not bypass, disable, or weaken any authentication, ownership, or license check, and it works normally with online-mode servers. No game assets are redistributed; all downloads come from Mojang's official endpoints or public mirrors.
@@ -205,7 +207,7 @@ Source code: https://github.com/Ryan-cpu-lang/NuomiLauncher</pre>
   <b>合规底线：</b>官方明确写了「应用必须验证用户拥有游戏、并在进入游戏前要求认证」，绕过正版验证的启动器一律不批。NuomiLauncher 走的就是完整正版链路，这点没问题 👌
 </div>
 
-<h2><span>③</span>拿到 client ID 之后</h2>
+<h2 id="s3"><span>③</span>拿到 client ID 之后</h2>
 
 <div class="step"><div class="num">A</div><div class="body">
   <h3>填进启动器</h3>
@@ -220,7 +222,7 @@ Source code: https://github.com/Ryan-cpu-lang/NuomiLauncher</pre>
   <p>通过之后点「使用微软账号登录」→ 浏览器自动打开 → 设备码已自动进剪贴板，Ctrl+V 即可；之后过期了点右边的「<strong>刷新</strong>」静默续期，不用再开浏览器。</p>
 </div></div>
 
-<h2><span>⚠️</span>常见坑速查</h2>
+<h2 id="s4"><span>⚠️</span>常见坑速查</h2>
 <ul>
   <li><strong>点「新注册」弹「在目录外部创建应用程序的功能已被弃用」</strong> → 2024-06 起的平台变更，个人账号没有 Entra 租户；回到 ⓪ 先建目录，换浏览器 / 重登都无效。</li>
   <li><code>AADSTS16000 ... account does not exist in tenant 'Microsoft Services'</code> → 同上，Entra 管理中心对个人 MSA 账号拿不到目录令牌。</li>
@@ -232,7 +234,7 @@ Source code: https://github.com/Ryan-cpu-lang/NuomiLauncher</pre>
 </ul>
 
 <footer>
-  NuomiLauncher · Ryan-cpu-lang · 最后更新 2026-11-05 · 本页可离线打开，不加载任何外部资源
+  NuomiLauncher · Ryan-cpu-lang · 最后更新 2026-11-05<br>正文与排版完全自包含，<b>离线双击也能读</b>；联网时额外启用站点顶栏与鼠标特效。
 </footer>
 
 </div>
@@ -248,5 +250,6 @@ function copyText(){
   }
 }
 </script>
+<script src="assets/fx.js?v=2"></script>
 </body>
 </html>
