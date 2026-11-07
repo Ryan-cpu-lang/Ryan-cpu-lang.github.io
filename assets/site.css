@@ -170,8 +170,8 @@ h1.hero-t{font-size:clamp(40px,6.4vw,70px);font-weight:860;line-height:1.08;lett
 .stat .l{font-size:12.5px;color:var(--faint);margin-top:2px}
 
 /* 吉祥物卡 */
-.mascot{position:relative;max-width:330px;margin:0 auto}
-@media(max-width:900px){.mascot{max-width:260px}}
+.mascot{position:relative;max-width:360px;margin:0 auto}
+@media(max-width:900px){.mascot{max-width:280px}}
 .mascot::before{
   content:"";position:absolute;inset:-28px -22px;z-index:0;border-radius:50%;
   background:radial-gradient(circle,rgba(139,108,255,.28),transparent 68%);
@@ -184,7 +184,23 @@ h1.hero-t{font-size:clamp(40px,6.4vw,70px);font-weight:860;line-height:1.08;lett
   transform:rotate(2deg);transition:.35s;
 }
 .mascot-card:hover{transform:rotate(0deg) translateY(-6px)}
-.mascot-card img{border-radius:18px;width:100%}
+/* 方形构图：原图是 787x1058 竖版，用 cover 裁成 1:1 保住头与上身，
+   底部渐变让裁切自然淡出。绝对定位 + object-fit 保证任何屏宽都不变形，
+   也修掉了旧版「窄屏被锁 512px 高、拉成细长条」的问题。 */
+.mascot-frame{position:relative;overflow:hidden;border-radius:18px;aspect-ratio:1/1;background:#e8ded6}
+.mascot-frame img{
+  position:absolute;inset:0;width:100%;height:100%;display:block;
+  object-fit:cover;object-position:center 20%;
+}
+.mascot-frame::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:42%;
+  background:linear-gradient(transparent,rgba(10,9,16,.68));pointer-events:none;
+}
+.mascot-tag{
+  position:absolute;left:18px;bottom:15px;z-index:2;
+  font-size:15px;font-weight:760;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.55);
+}
+.mascot-tag span{font-size:11px;font-weight:600;opacity:.78;margin-left:6px;letter-spacing:1.2px}
 .mascot-cap{text-align:center;margin-top:16px;font-size:13.5px;color:var(--dim)}
 .mascot-cap b{color:var(--ink)}
 
