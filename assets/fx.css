@@ -1,0 +1,126 @@
+/* ============================================================
+   Nuomi 官网 · 鼠标交互特效层
+   必须在 site.css 之后加载（倾斜规则需要覆盖 .reveal.in）。
+   仅桌面精确指针启用；触屏 / 减少动效 / 手动关闭时全部静止。
+   所有装饰层 pointer-events:none，不挡点击、不隐藏系统光标。
+   ============================================================ */
+
+/* ---------- 1. 跟随鼠标的柔光 ---------- */
+#fxGlow{
+  position:fixed;left:0;top:0;width:560px;height:560px;margin:-280px 0 0 -280px;
+  border-radius:50%;pointer-events:none;z-index:2;opacity:0;
+  background:radial-gradient(circle,
+    rgba(139,108,255,.15) 0%,
+    rgba(76,154,255,.075) 36%,
+    rgba(69,214,192,.03) 55%,
+    transparent 72%);
+  transition:opacity .5s ease;will-change:transform;
+}
+body.fx-on.fx-awake #fxGlow{opacity:1}
+
+/* ---------- 2. 双层光标（系统光标保留，只加光晕跟班） ---------- */
+#fxDot,#fxRing{
+  position:fixed;left:0;top:0;border-radius:50%;pointer-events:none;
+  z-index:9998;will-change:transform;opacity:0;transition:opacity .25s;
+}
+#fxDot{
+  width:6px;height:6px;margin:-3px 0 0 -3px;background:#fff;
+  box-shadow:0 0 10px 2px rgba(139,108,255,.95),0 0 22px rgba(76,154,255,.5);
+}
+#fxRing{
+  width:32px;height:32px;margin:-16px 0 0 -16px;
+  border:1.5px solid rgba(139,108,255,.65);
+  transition:opacity .25s,width .22s,height .22s,margin .22s,
+             border-color .22s,background .22s;
+}
+body.fx-on.fx-awake #fxDot,body.fx-on.fx-awake #fxRing{opacity:1}
+body.fx-hover #fxRing{
+  width:50px;height:50px;margin:-25px 0 0 -25px;
+  border-color:rgba(69,214,192,.9);background:rgba(139,108,255,.10);
+}
+
+/* ---------- 3. 卡片 3D 倾斜 + 聚光 ----------
+   .fx-ready 由 fx.js 在 reveal 淡入动画结束后才添加：
+   淡入期间沿用 site.css 的 transform/transition，避免两套 transform
+   切换瞬间跳变；淡入完成后 transform 值等价，接管无感知。          */
+.fx-tilt{--rx:0deg;--ry:0deg;--lift:0px;--mx:50%;--my:50%}
+.fx-tilt.fx-ready{
+  transform:perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(var(--lift));
+  transition:transform .18s ease-out,border-color .22s,background .22s,box-shadow .22s;
+}
+.fx-tilt.fx-ready:hover{--lift:-4px}
+.fx-shine{
+  position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+  background:radial-gradient(300px circle at var(--mx) var(--my),
+             rgba(139,108,255,.16),transparent 68%);
+  opacity:0;transition:opacity .28s;
+}
+.fx-tilt:hover .fx-shine{opacity:1}
+
+/* ---------- 4. 按钮流光 + 点击涟漪 ---------- */
+.fx-btn{position:relative;overflow:hidden}
+.fx-btn::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(130px circle at var(--mx,50%) var(--my,50%),
+             rgba(255,255,255,.28),transparent 72%);
+  opacity:0;transition:opacity .25s;
+}
+.fx-btn:hover::after{opacity:1}
+.fx-ripple{
+  position:absolute;pointer-events:none;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.6),
+             rgba(139,108,255,.28) 50%,transparent 72%);
+  transform:translate(-50%,-50%) scale(0);
+  animation:fx-rip .62s ease-out forwards;
+}
+@keyframes fx-rip{to{transform:translate(-50%,-50%) scale(1);opacity:0}}
+
+/* ---------- 5. Hero 视差（独立 translate 属性，不与 transform 冲突） ---------- */
+.fx-par{
+  translate:var(--px,0px) var(--py,0px);
+  transition:translate .25s ease-out;
+}
+
+/* ---------- 6. 点击撒团子 ---------- */
+.fx-pop{
+  position:fixed;width:9px;height:9px;border-radius:50%;
+  pointer-events:none;z-index:9997;
+  animation:fx-pop .8s cubic-bezier(.18,.7,.3,1) forwards;
+}
+.fx-pop.txt{width:auto;height:auto;background:none!important;font-size:17px;line-height:1}
+@keyframes fx-pop{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(.35)}
+  100%{opacity:0;transform:translate(calc(-50% + var(--dx)),
+                                     calc(-50% + var(--dy))) scale(1.1)}
+}
+
+/* ---------- 7. 特效开关（回到顶部按钮上方） ---------- */
+#fxToggle{
+  position:fixed;right:24px;bottom:78px;z-index:91;
+  width:40px;height:40px;border-radius:12px;cursor:pointer;
+  border:1px solid var(--line-strong);background:var(--panel-solid);
+  color:var(--ink);font-size:16px;line-height:1;opacity:.62;
+  transition:.2s;box-shadow:var(--shadow);
+}
+#fxToggle:hover{opacity:1;border-color:var(--violet);transform:translateY(-2px)}
+
+/* ---------- 8. 关闭 / 降级 ---------- */
+body.fx-off #fxGlow,body.fx-off #fxDot,body.fx-off #fxRing,
+body.fx-off .fx-shine,body.fx-off .fx-ripple,body.fx-off .fx-pop{display:none!important}
+body.fx-off .fx-tilt.fx-ready{transform:none}
+body.fx-off .fx-btn::after{display:none}
+body.fx-off .fx-par{translate:0 0}
+body.fx-off #fxToggle{opacity:.38}
+body.fx-off #fxToggle:hover{opacity:.9}
+
+@media(hover:none),(pointer:coarse){
+  #fxGlow,#fxDot,#fxRing,#fxToggle{display:none!important}
+  .fx-tilt.fx-ready{transform:none}
+  .fx-par{translate:0 0}
+}
+@media(prefers-reduced-motion:reduce){
+  #fxGlow,#fxDot,#fxRing,#fxToggle{display:none!important}
+  .fx-tilt.fx-ready{transform:none}
+  .fx-shine,.fx-ripple,.fx-pop,.fx-btn::after{display:none!important}
+  .fx-par{translate:0 0}
+}
