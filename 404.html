@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>页面走丢了 · Nuomi 糯米语言官网</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#08090d">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  .lost{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px}
+  .lost .code{font-size:clamp(88px,18vw,160px);font-weight:880;line-height:1;letter-spacing:-6px;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lost h1{font-size:clamp(22px,4vw,30px);font-weight:780;margin-top:6px}
+  .lost p{color:var(--dim);margin-top:12px;max-width:460px;font-size:15px}
+  .lost .cta{margin-top:30px}
+  .lost .links{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin-top:26px;font-size:13.5px}
+  .lost .links a{color:var(--dim);border-bottom:1px dashed var(--line-strong);padding-bottom:2px}
+  .lost .links a:hover{color:var(--violet);border-color:var(--violet)}
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="主导航">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="dot"></span>Nuomi<small>糯米语言</small></a>
+    <div class="navlinks" id="navlinks">
+      <a href="index.html">官网首页</a>
+      <a href="index.html#download">下载</a>
+      <a href="launcher.html">启动器</a>
+      <a href="index.html#docs">文档</a>
+    </div>
+    <a class="nav-gh" href="https://github.com/Ryan-cpu-lang" target="_blank" rel="noopener">⭐ GitHub</a>
+    <button class="burger" id="burger" aria-controls="navlinks"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<main class="lost">
+  <div class="code">404</div>
+  <h1>这页糯米团子被吃掉啦 🍡</h1>
+  <p>地址可能写错了，或者页面搬了家。别慌，从下面几个入口都能回到正轨。</p>
+  <div class="cta">
+    <a class="btn pri" href="index.html">🏠 回官网首页</a>
+    <a class="btn sec" href="launcher.html">🎮 看看启动器</a>
+  </div>
+  <div class="links">
+    <a href="index.html#download">下载 Nuomi</a>
+    <a href="ms-login-tutorial.html">微软登录教程</a>
+    <a href="azure-appid-guide.html">Azure 注册指南</a>
+    <a href="https://github.com/Ryan-cpu-lang" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</main>
+<footer style="text-align:center;padding:24px;color:var(--faint);font-size:12.5px;border-top:1px solid var(--line)">
+  Nuomi · 糯米语言 · © 2026 Ryan-cpu-lang
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

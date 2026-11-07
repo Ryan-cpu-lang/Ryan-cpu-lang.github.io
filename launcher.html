@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NuomiLauncher v1.0.1 — 用糯米语言写的 Minecraft 启动器 · 双击零黑框</title>
+<meta name="description" content="NuomiLauncher 是用纯 C 糯米语言写的 Minecraft 启动器：GUI + CLI 双模式、微软正版 / LittleSkin / 离线三种登录、SHA-1 校验、并发下载，v1.0.1 起双击启动零黑框。">
+<meta name="theme-color" content="#08090d">
+<meta property="og:type" content="website">
+<meta property="og:title" content="NuomiLauncher v1.0.1 · 双击零黑框">
+<meta property="og:description" content="用糯米语言写的 Minecraft 启动器，三种登录方式，双击即开、没有 cmd 黑框。">
+<meta property="og:url" content="https://ryan-cpu-lang.github.io/launcher.html">
+<link rel="canonical" href="https://ryan-cpu-lang.github.io/launcher.html">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  /* 本页专用：启动器窗口示意 */
+  .mockwin{border:1px solid var(--line-strong);border-radius:16px;overflow:hidden;
+    background:var(--panel-solid);box-shadow:var(--shadow);transform:rotate(-1.2deg);transition:.3s}
+  .mockwin:hover{transform:rotate(0)}
+  .mockwin .title{display:flex;align-items:center;gap:8px;padding:11px 14px;
+    background:linear-gradient(90deg,rgba(139,108,255,.16),rgba(76,154,255,.08));
+    border-bottom:1px solid var(--line);font-size:12.5px;color:var(--dim)}
+  .mockwin .title i{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .mockwin .title .t{margin-left:8px;font-weight:650;color:var(--ink)}
+  .mockwin .body{padding:20px}
+  .mockrow{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .mockbtn{font-size:12.5px;padding:7px 14px;border-radius:9px;border:1px solid var(--line);
+    background:rgba(255,255,255,.04);color:var(--dim)}
+  .mockbtn.on{background:var(--grad);color:#08101a;border-color:transparent;font-weight:700}
+  .mockacct{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:11px;
+    border:1px solid var(--line);background:rgba(255,255,255,.025);margin-bottom:9px}
+  .mockacct .av{width:30px;height:30px;border-radius:9px;flex:none;
+    background:linear-gradient(135deg,var(--pink),var(--violet))}
+  .mockacct .av.b{background:linear-gradient(135deg,var(--cyan),var(--blue))}
+  .mockacct .av.c{background:linear-gradient(135deg,var(--amber),var(--pink))}
+  .mockacct .nm{font-size:13px;font-weight:650}
+  .mockacct .ds{font-size:11px;color:var(--faint)}
+  .mockacct .ck{margin-left:auto;color:var(--cyan);font-size:14px}
+  .mockstatus{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);
+    font-size:11.5px;color:var(--faint);display:flex;justify-content:space-between;gap:10px}
+  .nocmd{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:13px;
+    background:rgba(69,214,192,.07);border:1px solid rgba(69,214,192,.28);font-size:14px}
+  .nocmd .big{font-size:26px}
+</style>
+</head>
+<body>
+
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ============ 导航 ============ -->
+<nav class="nav" aria-label="主导航">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="dot"></span>Nuomi<small>糯米语言</small></a>
+    <div class="navlinks" id="navlinks">
+      <a href="index.html">← 官网首页</a>
+      <a href="#start">快速开始</a>
+      <a href="#login">登录方式</a>
+      <a href="#assets">下载</a>
+      <a href="#why">零黑框原理</a>
+      <a href="#docs">教程</a>
+      <a href="https://github.com/Ryan-cpu-lang/NuomiLauncher" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+    <a class="nav-gh" href="https://github.com/Ryan-cpu-lang/NuomiLauncher/releases/tag/v1.0.1" target="_blank" rel="noopener">⬇ v1.0.1</a>
+    <button class="burger" id="burger" aria-controls="navlinks"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- ============ Hero ============ -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="badge-row">
+        <span class="chip live"><span class="pulse"></span>v1.0.1 · 已发布</span>
+        <span class="chip hi">用糯米语言写成</span>
+        <span class="chip">2026-11-06</span>
+      </div>
+      <h1 class="hero-t">Nuomi<span class="grad-txt">Launcher</span></h1>
+      <p class="sub">一个用 <b>糯米语言</b>（而不是 C#/Java/TS）从零写出来的 Minecraft 启动器。<br>
+        自绘 GUI、离线 Piston API、SHA-1 校验、并发下载 —— <b>v1.0.1 起双击启动再无 cmd 黑框</b> 🎮</p>
+      <div class="cta">
+        <a class="btn pri" href="https://github.com/Ryan-cpu-lang/NuomiLauncher/releases/tag/v1.0.1" target="_blank" rel="noopener">⬇ 下载 v1.0.1</a>
+        <a class="btn sec" href="#start">🚀 快速开始</a>
+        <a class="btn sec" href="ms-login-tutorial.html">📖 登录教程</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="n">3</div><div class="l">种登录方式</div></div>
+        <div class="stat"><div class="n">7</div><div class="l">个下载资产</div></div>
+        <div class="stat"><div class="n">0</div><div class="l">个黑框 ✨</div></div>
+        <div class="stat"><div class="n">100%</div><div class="l">糯米语言编写</div></div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="mockwin">
+        <div class="title">
+          <i style="background:#ff6b6b"></i><i style="background:#ffc46b"></i><i style="background:#57c75e"></i>
+          <span class="t">🍡 NuomiLauncher</span>
+        </div>
+        <div class="body">
+          <div class="mockrow">
+            <span class="mockbtn on">启动游戏</span><span class="mockbtn">下载</span><span class="mockbtn">账户</span>
+          </div>
+          <div class="mockacct"><span class="av"></span><div><div class="nm">Tracgiture</div><div class="ds">LittleSkin · 已登录</div></div><span class="ck">✓</span></div>
+          <div class="mockacct"><span class="av b"></span><div><div class="nm">Caeliana</div><div class="ds">LittleSkin · 可切换</div></div></div>
+          <div class="mockacct"><span class="av c"></span><div><div class="nm">离线玩家</div><div class="ds">离线模式 · 无需网络</div></div></div>
+          <div class="mockstatus"><span>✅ 资源已就绪</span><span>1.21.4 · 双击零黑框</span></div>
+        </div>
+      </div>
+      <p class="mascot-cap" style="margin-top:14px">界面示意 · 真实 GUI 由 <code class="inl">gui.nuomi</code> 自绘</p>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ============ 零黑框亮点 ============ -->
+<section id="why" class="tight">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">What's New</div>
+      <h2>v1.0.1：双击启动，零黑框</h2>
+      <p>这是最新一版最主要的变化。以前双击启动器会跟着弹一个甚至几个 cmd 黑窗口，现在全没了。</p>
+    </div>
+    <div class="nocmd reveal" style="margin-bottom:22px">
+      <span class="big">🪟</span>
+      <div><b>现在只要双击 <code class="inl">nuomiMC-GUI.vbs</code></b>，窗口直接出来，屏幕上不会跟着黑框；想看下载日志时才用 <code class="inl">start.bat download</code>（那个框是有意留的）。</div>
+    </div>
+    <div class="grid">
+      <div class="card reveal"><div class="ico">🖥️</div><h3>双 exe 设计</h3><p><code class="inl">nuomi.exe</code> 保留控制台给 CLI / REPL；<code class="inl">nuomiw.exe</code> 是 GUI 子系统版。同一份二进制只改 PE 头 Subsystem（3→2），仅差 4 字节，入口代码完全不变。</p></div>
+      <div class="card reveal"><div class="ico">🤫</div><h3>静默子进程</h3><p><code class="inl">proc.c</code> 给 CreateProcess 加 <code class="inl">CREATE_NO_WINDOW</code>，curl / java 等后台进程不再弹窗，输出照旧走匿名管道回 GUI。</p></div>
+      <div class="card reveal"><div class="ico">🔇</div><h3>无控制台兜底</h3><p>GUI 版没有 stdout，运行时自动把标准流接到 NUL、给子进程补有效 stdin 句柄，避免不同 CRT 的行为差异。</p></div>
+      <div class="card reveal"><div class="ico">✅</div><h3>实测验证</h3><p>真·无控制台（DETACHED_PROCESS）下探针退出码 0、cmd/curl 子进程正常；console 版 12 个样例 + NUC 流水线 + 编译模式全部回归通过。</p></div>
+    </div>
+    <div class="callout reveal" style="margin-top:22px">
+      <span class="ico">🧠</span>
+      <div><b>为什么不用 <code class="inl">-mwindows</code> 重编译？</b>因为链接器切 GUI 子系统会改选 <code class="inl">WinMainCRTStartup</code> 入口，而 Nuomi 用的是标准 <code class="inl">main()</code>，会直接链接失败；而且一刀切会把 CLI 日志、REPL、编译模式全废掉。改 PE 头是 Python <code class="inl">python.exe</code> / <code class="inl">pythonw.exe</code> 同款做法。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 快速开始 ============ -->
+<section id="start">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">Quick Start</div>
+      <h2>三步开玩</h2>
+      <p>不用装 Nuomi、不用配环境变量、不用编译 —— 所有东西都在 Release 压缩包里。</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><h3>下载 7 个文件</h3><p>从 <a href="https://github.com/Ryan-cpu-lang/NuomiLauncher/releases/tag/v1.0.1" target="_blank" rel="noopener" style="color:#9cc7ff;text-decoration:underline">v1.0.1 Release</a> 把全部资产下载到<b>同一个文件夹</b>（路径别带奇怪符号）。</p></div>
+      <div class="step reveal"><h3>双击 nuomiMC-GUI.vbs</h3><p>这是推荐入口，零黑框。等效命令是 <code class="inl">start.bat gui</code>；想看日志用 <code class="inl">start.bat download</code>。</p></div>
+      <div class="step reveal"><h3>加账户 → 启动游戏</h3><p>在「账户」页添加微软 / LittleSkin / 离线账户，回到「启动游戏」页点一下即可。首次会下载 client.jar、依赖库与资源，稍等片刻。</p></div>
+    </div>
+    <div class="callout reveal" style="margin-top:22px">
+      <span class="ico">☕</span>
+      <div><b>唯一前置条件：</b>本机要装好 Java 并在 PATH 里（Minecraft 本体需要）。启动器会校验资源 SHA-1、自动解压 natives，其余都自动化。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 登录方式 ============ -->
+<section id="login">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">Accounts</div>
+      <h2>三种登录方式</h2>
+      <p>账户存在 <code class="inl">accounts.txt</code>，一行一个，GUI 里一键切换；带 refresh token 的会自动静默续期。</p>
+    </div>
+    <div class="prod-grid">
+      <article class="prod reveal">
+        <div class="ico">🪪</div>
+        <h3>微软正版 <span class="ver">OAuth 2.0</span></h3>
+        <p>标准设备码流（RFC 8628）：浏览器打开链接 → 粘贴设备码 → 授权，之后走 XSTS / Minecraft 服务换 token。支持 refresh token 静默续期，不用每次重登。</p>
+        <div class="tags"><span class="tag">设备码流</span><span class="tag">自动续期</span><span class="tag">错误中文化</span></div>
+        <div class="prod-links"><a class="btn pri sm" href="ms-login-tutorial.html">📖 看登录教程</a><a class="btn sec sm" href="azure-appid-guide.html">注册应用 ID ↗</a></div>
+      </article>
+      <article class="prod reveal">
+        <div class="ico">🌸</div>
+        <h3>LittleSkin <span class="ver">Yggdrasil</span></h3>
+        <p>走 <code class="inl">/authenticate</code> + <code class="inl">/refresh</code>，带 clientToken 静默续期。已修复密码含引号 / 反斜杠时的登录失败，以及 curl 读到陈旧响应的问题。<b>实测登录通过 ✅</b></p>
+        <div class="tags"><span class="tag">第三方皮肤站</span><span class="tag">多角色切换</span><span class="tag">门槛低</span></div>
+        <div class="prod-links"><a class="btn sec sm" href="https://littleskin.cn/" target="_blank" rel="noopener">LittleSkin 官网 ↗</a></div>
+      </article>
+      <article class="prod reveal">
+        <div class="ico">🎈</div>
+        <h3>离线模式 <span class="ver">Offline</span></h3>
+        <p>只要填一个玩家名，不联网、不验证，立刻能进游戏。适合单机、局域网和先试试启动器好不好用。</p>
+        <div class="tags"><span class="tag">零配置</span><span class="tag">无需网络</span><span class="tag">即开即用</span></div>
+      </article>
+    </div>
+    <div class="callout reveal" style="margin-top:22px">
+      <span class="ico">⚠️</span>
+      <div><b>关于微软登录的门槛（说清楚免得踩坑）：</b>启动器本身用的是标准 OAuth 2.0，但需要一个<b>属于你自己的 Azure 应用 ID</b>（公共 client_id 已被下架），还要提交 Mojang AppID 人工审核。而 Azure 免费账号现在要求手机号 + <b>实体信用卡</b>验证，虚拟卡不收 —— 所以大多数人建议先用 <b>LittleSkin</b> 或 <b>离线模式</b>。完整流程见 <a href="ms-login-tutorial.html" style="color:#9cc7ff;text-decoration:underline">教程</a>。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 下载资产 ============ -->
+<section id="assets">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">Download</div>
+      <h2>v1.0.1 资产清单</h2>
+      <p>7 个文件，全部放在同一个文件夹即可运行。<a href="https://github.com/Ryan-cpu-lang/NuomiLauncher/releases/tag/v1.0.1" target="_blank" rel="noopener" style="color:#9cc7ff;text-decoration:underline">去 Release 页下载全部 ↗</a></p>
+    </div>
+    <div class="tbl-wrap reveal">
+      <table class="tbl">
+        <thead><tr><th>文件</th><th>大小</th><th>作用</th></tr></thead>
+        <tbody>
+          <tr><td>nuomiMC-GUI.vbs</td><td>1,000 B</td><td>★ 推荐双击入口，零黑框打开 GUI</td></tr>
+          <tr><td>nuomiw.exe</td><td>646,144 B</td><td>GUI 子系统解释器（无控制台、不弹黑框）</td></tr>
+          <tr><td>nuomi.exe</td><td>646,144 B</td><td>控制台解释器，给 CLI / 看日志用</td></tr>
+          <tr><td>gui.nuomi</td><td>33,853 B</td><td>自绘 GUI 界面：启动 / 下载 / 账户三页</td></tr>
+          <tr><td>launcher.nuomi</td><td>61,371 B</td><td>启动器核心：版本清单、下载、校验、启动 java</td></tr>
+          <tr><td>start.bat</td><td>1,356 B</td><td>命令行入口：gui / dry / download / launch</td></tr>
+          <tr><td>README.md</td><td>21,566 B</td><td>完整中文文档</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:24px" class="reveal">
+      <a class="btn pri" href="https://github.com/Ryan-cpu-lang/NuomiLauncher/releases/tag/v1.0.1" target="_blank" rel="noopener">⬇ 打开 v1.0.1 Release</a>
+      <a class="btn sec" href="https://github.com/Ryan-cpu-lang/NuomiLauncher" target="_blank" rel="noopener" style="margin-left:8px">源码仓库 ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 功能 ============ -->
+<section id="features" class="tight">
+  <div class="wrap">
+    <div class="sec-head reveal"><div class="kicker">Features</div><h2>它能干什么</h2></div>
+    <div class="grid">
+      <div class="card reveal"><div class="ico">🖼️</div><h3>自绘 GUI</h3><p>启动 / 下载 / 账户三页，糯米语言的 13 个窗口原语画出来的真 Win32 窗口。</p></div>
+      <div class="card reveal"><div class="ico">📡</div><h3>离线 Piston API</h3><p>解析版本清单，自动拉取 client.jar、依赖库、原生库与资源索引。</p></div>
+      <div class="card reveal"><div class="ico">🔐</div><h3>SHA-1 校验</h3><p>每个资源下载后校验哈希，坏了就重下，不会因为一个坏包崩在游戏启动前。</p></div>
+      <div class="card reveal"><div class="ico">⚡</div><h3>并发下载</h3><p>系统 curl --parallel 并发拉取 4000+ 资源文件，比内置 WinINet 串行快约 4 倍。</p></div>
+      <div class="card reveal"><div class="ico">📦</div><h3>自动解压 natives</h3><p>自带 deflate 解压 zip / jar，原生库自动铺到实例目录，无需 zlib。</p></div>
+      <div class="card reveal"><div class="ico">🔄</div><h3>静默续期</h3><p>微软 refresh_token / LittleSkin clientToken 都能后台换新，不用反复输密码。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 文档 ============ -->
+<section id="docs">
+  <div class="wrap">
+    <div class="sec-head reveal"><div class="kicker">Docs</div><h2>教程与排错</h2></div>
+    <div class="doc-grid">
+      <a class="doc reveal" href="ms-login-tutorial.html"><div class="ico">📖</div><h3>微软正版账号登录教程 <span class="arrow">↗</span></h3><p>端到端、玩家向，重点讲清楚启动器里怎么点、设备码怎么用。</p><div class="meta">ms-login-tutorial.html</div></a>
+      <a class="doc reveal" href="azure-appid-guide.html"><div class="ico">🪪</div><h3>Azure 应用注册图文指南 <span class="arrow">↗</span></h3><p>拿目录 → 注册应用 → 提交 Mojang 审核 → 填进启动器，附表单模板。</p><div class="meta">azure-appid-guide.html</div></a>
+      <a class="doc reveal" href="https://github.com/Ryan-cpu-lang/NuomiLauncher/blob/main/README.md" target="_blank" rel="noopener"><div class="ico">📘</div><h3>README 完整文档 <span class="arrow">↗</span></h3><p>配置项、命令行模式、已知限制、accounts.txt 字段说明全在这。</p><div class="meta">GitHub · README.md</div></a>
+    </div>
+    <div class="callout cyan reveal" style="margin-top:22px">
+      <span class="ico">🛠️</span>
+      <div><b>几个常见情况：</b>双击没反应 → 改用 <code class="inl">start.bat gui</code> 看报错；想看下载进度 → <code class="inl">start.bat download</code>；旧版 LittleSkin 账户第 7 列是 <code class="inl">0</code>，重登一次才能用「刷新」；中文标题乱码已在 v0.3.1 用宽字符 API 修掉。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Footer ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="index.html"><span class="dot"></span>Nuomi<small>糯米语言</small></a>
+        <p>NuomiLauncher 由糯米语言写成，<br>是这门语言第一个真正跑起来的大项目。</p>
+      </div>
+      <div class="foot-col"><h4>启动器</h4><a href="#start">快速开始</a><a href="#login">登录方式</a><a href="#assets">下载资产</a><a href="#why">零黑框原理</a></div>
+      <div class="foot-col"><h4>文档</h4><a href="ms-login-tutorial.html">微软登录教程</a><a href="azure-appid-guide.html">Azure 注册指南</a><a href="https://github.com/Ryan-cpu-lang/NuomiLauncher/blob/main/README.md" target="_blank" rel="noopener">README ↗</a></div>
+      <div class="foot-col"><h4>返回</h4><a href="index.html">官网首页</a><a href="index.html#features">语言特性</a><a href="index.html#download">下载 Nuomi</a><a href="https://github.com/Ryan-cpu-lang" target="_blank" rel="noopener">GitHub ↗</a></div>
+    </div>
+    <div class="foot-bottom">
+      <span>🍡 NuomiLauncher v1.0.1 · © 2026 Ryan-cpu-lang</span>
+      <span>GitHub Pages 托管 · <a href="index.html">返回官网 ↑</a></span>
+    </div>
+  </div>
+</footer>
+
+<button id="top" aria-label="回到顶部">↑</button>
+<script src="assets/site.js"></script>
+</body>
+</html>

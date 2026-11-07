@@ -79,9 +79,22 @@
   .toc li{margin:4px 0}
   @media(max-width:600px){.step{padding:13px 14px}header{padding:20px}th,td{padding:8px}}
 </style>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="stylesheet" href="assets/sitebar.css">
 </head>
 <body>
 <div class="wrap">
+<div class="sitebar">
+  <a class="sb-brand" href="index.html"><span class="dot"></span>Nuomi 糯米语言</a>
+  <div class="sb-links">
+    <a href="index.html">官网首页</a>
+    <a href="launcher.html">启动器</a>
+    <a href="ms-login-tutorial.html" class="cur">微软登录教程</a>
+    <a href="azure-appid-guide.html">Azure 指南</a>
+    <a href="https://github.com/Ryan-cpu-lang/NuomiLauncher" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</div>
+
 
 <header>
   <h1>微软正版账号登录教程</h1>
@@ -94,7 +107,7 @@
   如果你只在自己的 LittleSkin 角色 / 离线单机之间玩，<b>根本不用看下面这套微软流程</b>。微软正版登录是给「要用微软账号进正版服务器」的人准备的，而且因为微软的政策，得自己动手注册一个应用（见下方「为什么」）。
 </div>
 
-<div class="notice">
+<div class="notice" id="s0">
   <b>为什么不能直接登录？</b> 早期各开源启动器共用的「公共 client_id」<code>00000000402b5328</code>
   已被微软从目录里移除（2026-11-05 实测返回 <code>AADSTS700016</code>）。微软现在要求：
   <b>① 你自己的 Azure 应用（client_id）</b> + <b>② 该应用通过 Mojang 的 AppID 审核</b> +
@@ -225,7 +238,7 @@ Mojang's official endpoints or public mirrors."</pre>
 <p>回到主界面点「启动」，启动参数会自动带上 <code>--clientId / --xuid / --userType msa / --accessToken</code>，以你的正版账号进游戏。</p>
 
 <h3>第 7 步（以后）：续期不用重登</h3>
-<p>令牌会过期（改密码、异地登录等）。过期时点主按钮右边的「<b>刷新</b」，启动器用存好的 refresh token <b>静默换新令牌，不开浏览器、不用重输密码</b>。失败就重新点「使用微软账号登录」走一遍。</p>
+<p>令牌会过期（改密码、异地登录等）。过期时点主按钮右边的「<b>刷新</b>」，启动器用存好的 refresh token <b>静默换新令牌，不开浏览器、不用重输密码</b>。失败就重新点「使用微软账号登录」走一遍。</p>
 
 <!-- ============ 排错 ============ -->
 <h2 id="s5"><span>⚠️</span>常见问题 / 排错</h2>

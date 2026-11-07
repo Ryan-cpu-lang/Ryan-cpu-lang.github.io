@@ -1,0 +1,22 @@
+/* 亮色文档页（微软登录教程 / Azure 指南）专用的站点顶栏。
+   只作用于 .sitebar，不污染文档页自身的排版。 */
+.sitebar{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  width:100%;padding:11px 17px;margin:0 0 22px;
+  background:#fff;border:1px solid #efe6e9;border-bottom:2px solid #f3c9d5;
+  border-radius:14px;box-shadow:0 6px 22px rgba(160,110,125,.09);
+  font-family:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;
+  font-size:13.5px;line-height:1.5;
+}
+.sitebar .sb-brand{display:flex;align-items:center;gap:9px;font-weight:800;color:#2f2a30;font-size:15px;white-space:nowrap}
+.sitebar .sb-brand:hover{color:#d9647f}
+.sitebar .sb-brand .dot{width:11px;height:11px;border-radius:50%;
+  background:linear-gradient(120deg,#8b6cff,#4c9aff,#45d6c0);flex:none}
+.sitebar .sb-links{display:flex;gap:4px;flex-wrap:wrap}
+.sitebar .sb-links a{padding:6px 11px;border-radius:8px;color:#6f6670;transition:.15s;white-space:nowrap}
+.sitebar .sb-links a:hover{color:#d9647f;background:#fdeef2}
+.sitebar .sb-links a.cur{color:#d9647f;background:#fdeef2;font-weight:700}
+@media(max-width:620px){
+  .sitebar{justify-content:center;text-align:center;padding:12px}
+  .sitebar .sb-links{justify-content:center}
+}

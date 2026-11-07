@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ryan-cpu-lang.github.io/sitemap.xml
